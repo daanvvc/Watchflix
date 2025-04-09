@@ -1,0 +1,46 @@
+name: CICD
+
+on:
+  push:
+    # TODO REMOVE WEEK8
+    branches: [ "main", "development", "Week8" ]
+  pull_request:
+    branches: [ "main", "development", "Week8" ]
+
+jobs:
+  build_spring_boot_services:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        service: [ Gateway, Eureka, MovieService, MovieFileService ]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # So it has permission to use gradlew
+    - name: Gradlew permission
+      run: chmod +x ./${{ matrix.service }}/gradlew
+
+    - name: Build ${{ matrix.service }}
+      working-directory: ./${{ matrix.service }}
+      run: ./gradlew build
+
+  unit_test_spring_boot_services:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # TODO Add MovieFileService
+        service: [ MovieService ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # So it has permission to use gradlew
+      - name: Gradlew permission
+        run: chmod +x ./${{ matrix.service }}/gradlew
+
+      - name: Unit test ${{ matrix.service }}
+        working-directory: ./${{ matrix.service }}
+        run: ./gradlew test
