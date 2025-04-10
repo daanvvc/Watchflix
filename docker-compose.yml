@@ -1,0 +1,68 @@
+services:
+  EUREKA:
+    build:
+      context: ./Eureka
+    image: eureka
+    container_name: Eureka
+    networks:
+      - watchflix-network
+    ports:
+      - '8761:8761'
+
+  MOVIE-SERVICE:
+    build:
+      context: ./MovieService
+    image: movieservice
+    container_name: MovieService
+    networks:
+      - watchflix-network
+    ports:
+      - '9090:9090'
+    depends_on:
+      - EUREKA
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  MOVIE-FILE-SERVICE:
+    build:
+      context: ./MovieFileService
+    image: moviefileservice
+    container_name: MovieFileService
+    networks:
+      - watchflix-network
+    ports:
+      - '9091:9091'
+    depends_on:
+      - EUREKA
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  GATEWAY:
+    build:
+      context: ./Gateway
+    image: gateway
+    container_name: Gateway
+    networks:
+      - watchflix-network
+    ports:
+      - '8085:8085'
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  WEBAPP:
+    build:
+      context: ./Watchflix
+    image: webapp
+    container_name: Webapp
+    ports:
+      - "3000:3000"   # Exposing the React frontend on port 3000
+    networks:
+      - watchflix-network
+    depends_on:
+      - GATEWAY
+#    environment:
+#      - REACT_APP_API_URL=http://localhost:8080   # You can use your gateway or backend URL
+
+networks:
+  watchflix-network:
+    driver: bridge

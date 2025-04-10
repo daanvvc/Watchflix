@@ -1,0 +1,18 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: GATEWAY
+  cloud:
+    gateway:
+      routes:
+        - id: MOVIE-SERVICE
+          -uri: lb://MOVIE-SERVICE
+          predicates:
+            - Path=/movie/**
+        - id: MOVIE-FILE-SERVICE
+          -uri: lb://MOVIE-FILE-SERVICE
+          predicates:
+            - Path=/movieFile/**
+  profiles:
+    active: dev
