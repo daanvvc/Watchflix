@@ -1,9 +1,15 @@
 HELP.md
 .gradle
-build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+# To add jacoco test reports for sonarcloud
+**/build/*
+!**/build/reports
+**/build/reports/tests
+**/build/reports/jacoco/test/*
+!**/build/reports/jacoco/test/jacocoTestReport.xml
 
 ### STS ###
 .apt_generated
