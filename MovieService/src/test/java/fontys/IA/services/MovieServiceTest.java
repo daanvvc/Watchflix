@@ -24,8 +24,6 @@ class MovieServiceTest {
     private IMovieRepository movieMockRepository;
     @InjectMocks
     private MovieService movieService;
-    @Captor
-    private ArgumentCaptor<Movie> movieCaptor;
 
     Movie movie;
     Long id = (long)0;

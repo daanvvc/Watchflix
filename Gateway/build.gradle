@@ -53,7 +53,7 @@ jacoco {
 
 sonar {
     properties {
-        property "sonar.projectKey", "daanvvc_Watchflix"
+        property "sonar.projectKey", "Watchflix_Gateway"
         property "sonar.organization", "daanvvc"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
