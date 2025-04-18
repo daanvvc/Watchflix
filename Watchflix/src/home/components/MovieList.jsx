@@ -17,7 +17,7 @@ const MovieList = () => {
         {movies.map(movie => {
             return (
               <li key={movie.name}>
-                <NavLink to={`/watch/${movie.id}`}>
+                <NavLink data-testid={movie.name} to={`/watch/${movie.id}`}>
                   {movie.name} 
                 </NavLink>
               </li>)
