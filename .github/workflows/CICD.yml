@@ -64,8 +64,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Install dependencies
-        run: npm ci
       - name: Cache node modules
         uses: actions/cache@v4
         with:
@@ -73,9 +71,13 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - name: Run build
+      - name: Install dependencies
+        run: npm ci
+      - name: Run build ${{ matrix.service }}
         run: npm run build
-      - name: SonarQube Scan
+      - name: Unit test ${{ matrix.service }}
+        run: npm run build
+      - name: Sonar scan ${{ matrix.service }}
         uses: SonarSource/sonarqube-scan-action@v5
         with:
           projectBaseDir: ./${{ matrix.service }}
