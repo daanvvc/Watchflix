@@ -7,47 +7,47 @@ on:
     branches: [ "main", "development" ]
 
 jobs:
-#  backend_build_test_analyze:
-#    name: Build, test and analyze backend services
-#    runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        service: [ Gateway, MovieService, Eureka, MovieFileService ]
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v4
-#        with:
-#          fetch-depth: 0
-#      - name: Set up JDK 17
-#        uses: actions/setup-java@v4
-#        with:
-#          java-version: 17
-#          distribution: 'zulu'
-#      - name: Gradlew permission
-#        run: chmod +x ./${{ matrix.service }}/gradlew
-#      - name: Cache SonarQube packages
-#        uses: actions/cache@v4
-#        with:
-#         path: ~/${{ matrix.service }}/.sonar/cache
-#         key: ${{ runner.os }}-sonar
-#         restore-keys: ${{ runner.os }}-sonar
-#      - name: Cache Gradle packages
-#        uses: actions/cache@v4
-#        with:
-#         path: ~/${{ matrix.service }}/.gradle/caches
-#         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-#         restore-keys: ${{ runner.os }}-gradle
-#      - name: Build ${{ matrix.service }}
-#        working-directory: ${{ matrix.service }}
-#        run: ./gradlew build
-#      - name: Unit test (with coverage) ${{ matrix.service }}
-#        working-directory: ./${{ matrix.service }}
-#        run: ./gradlew test jacocoTestReport
-#      - name: Sonar scan ${{ matrix.service }}
-#        working-directory: ./${{ matrix.service }}
-#        env:
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#        run: ./gradlew build sonar
+  backend_build_test_analyze:
+    name: Build, test and analyze backend services
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [ Gateway, MovieService, Eureka, MovieFileService ]
+    defaults:
+      run:
+        working-directory: ./${{ matrix.service }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'zulu'
+      - name: Gradlew permission
+        run: chmod +x ./gradlew
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+         path: ~/.sonar/cache
+         key: ${{ runner.os }}-sonar
+         restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+         path: ~/.gradle/caches
+         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+         restore-keys: ${{ runner.os }}-gradle
+      - name: Build ${{ matrix.service }}
+        run: ./gradlew build
+      - name: Unit test (with coverage) ${{ matrix.service }}
+        run: ./gradlew test jacocoTestReport
+      - name: Sonar scan ${{ matrix.service }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew build sonar
   frontend_build_test_analyze:
     name: Build, test and analyze webapp
     runs-on: ubuntu-latest
