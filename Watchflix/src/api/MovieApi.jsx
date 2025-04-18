@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const URL = "http://localhost:8085/movie"
+const URL = import.meta.env.VITE_HOST + "/movie"
 
 const MovieApi = {
     getMovie: (movieId) => axios.get(URL + `/${movieId}`),
