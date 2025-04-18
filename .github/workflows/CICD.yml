@@ -51,9 +51,12 @@ jobs:
   frontend_build_test_analyze:
     name: Build, test and analyze webapp
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [ Watchflix ]
     defaults:
       run:
-        working-directory: ./Watchflix
+        working-directory: ./${{ matrix.service }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
