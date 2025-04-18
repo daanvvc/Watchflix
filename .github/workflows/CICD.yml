@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build, test and analyze spring boot services
+    name: Build, test and analyze backend services
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -24,24 +24,24 @@ jobs:
           distribution: 'zulu'
       - name: Gradlew permission
         run: chmod +x ./${{ matrix.service }}/gradlew
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+         path: ~/${{ matrix.service }}/.sonar/cache
+         key: ${{ runner.os }}-sonar
+         restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+         path: ~/${{ matrix.service }}/.gradle/caches
+         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+         restore-keys: ${{ runner.os }}-gradle
       - name: Build ${{ matrix.service }}
         working-directory: ${{ matrix.service }}
         run: ./gradlew build
       - name: Unit test (with coverage) ${{ matrix.service }}
         working-directory: ./${{ matrix.service }}
         run: ./gradlew test jacocoTestReport
-      - name: Cache SonarQube packages
-        uses: actions/cache@v4
-        with:
-          path: ~/${{ matrix.service }}/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: ~/${{ matrix.service }}/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
       - name: Sonar scan ${{ matrix.service }}
         working-directory: ./${{ matrix.service }}
         env:
