@@ -76,7 +76,7 @@ jobs:
       - name: Run build ${{ matrix.service }}
         run: npm run build
       - name: Unit test ${{ matrix.service }}
-        run: npm run build
+        run: npm test -- -- coverage
       - name: Sonar scan ${{ matrix.service }}
         uses: SonarSource/sonarqube-scan-action@v5
         with:
