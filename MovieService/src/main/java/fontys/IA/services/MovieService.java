@@ -1,19 +1,21 @@
 package fontys.IA.services;
 
 import fontys.IA.domain.Movie;
+import fontys.IA.domain.enums.Status;
 import fontys.IA.repositories.IMovieRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class MovieService {
     private IMovieRepository movieRepository;
 
-    public Movie getMovie(long movieId) {
+    public Movie getMovie(String movieId) {
         Optional<Movie> movie = movieRepository.findById(movieId);
 
         return movie.orElse(null);
@@ -25,5 +27,21 @@ public class MovieService {
         }
 
         return movieRepository.findNrOfMovies(numberOfMovies);
+    }
+
+    public void addMovie(Movie movie) {
+        if(movieRepository.findById(movie.getId().toString()).isPresent()){
+            // TODO throw exception?
+        }
+
+        movieRepository.save(movie);
+    }
+
+    public void updateMovieUploadStatus(String movieId, Status uploadStatus) {
+        if(movieRepository.findById(movieId).isPresent()){
+            // TODO throw exception?
+        }
+
+        movieRepository.updateStatus(movieId, uploadStatus);
     }
 }
