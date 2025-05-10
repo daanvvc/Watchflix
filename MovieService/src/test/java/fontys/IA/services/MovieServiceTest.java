@@ -15,6 +15,10 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
@@ -26,7 +30,7 @@ class MovieServiceTest {
     private MovieService movieService;
 
     Movie movie;
-    Long id = (long)0;
+    String id = UUID.randomUUID().toString();
     String name = "The Brutalist";
     @BeforeEach
     public void BeforeEach() {
@@ -57,7 +61,7 @@ class MovieServiceTest {
     @Test
     void GetMovie_ThatDoesNotExist_SuccessTest() {
         // Arrange
-        id = (long)500;
+        id = UUID.randomUUID().toString();
         Optional<Movie> returnMovie = Optional.empty();
 
         when(movieMockRepository.findById(id)).thenReturn(returnMovie);
@@ -66,7 +70,7 @@ class MovieServiceTest {
         Movie actualMovie = movieService.getMovie(id);
 
         // Assert
-        assertEquals(actualMovie, null);
+        assertNull(actualMovie);
         verify(movieMockRepository, times(1)).findById(id);
     }
 }

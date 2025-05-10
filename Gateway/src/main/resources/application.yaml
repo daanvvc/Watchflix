@@ -10,6 +10,12 @@ spring:
           -uri: lb://MOVIE-SERVICE
           predicates:
             - Path=/movie/**
+        - id: MESSAGE-SERVICE
+          -uri: lb://MESSAGE-SERVICE
+          predicates:
+            - Path=/movieFile/upload
+#          filters:
+#            - name: MovieUploadUUIDFilter
         - id: MOVIE-FILE-SERVICE
           -uri: lb://MOVIE-FILE-SERVICE
           predicates:
