@@ -1,12 +1,12 @@
 package fontys.IA;
 
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -20,9 +20,15 @@ public class MovieUploadRunner {
     }
 
     @PostMapping(value = "/upload")
-    public ResponseEntity<String> uploadFile() {
+    public ResponseEntity<String> uploadFile(@RequestHeader("UUID") String movieId) {
         try {
-            rabbitTemplate.convertAndSend("amq.topic", "movie-upload-routing-key", "Hello from RabbitMQ!");
+            Message message = MessageBuilder
+                    .withBody("Hello from RabbitMQ!".getBytes())
+                    .setContentType(MessageProperties.CONTENT_TYPE_TEXT_PLAIN)
+                    .setHeader("movieId", movieId)
+                    .build();
+
+            rabbitTemplate.convertAndSend("amq.topic", "movie-upload-routing-key", message);
             return ResponseEntity.ok("The upload request is being handled");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
