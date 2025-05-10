@@ -14,7 +14,7 @@ import java.util.UUID;
 public class MovieUploadListener {
     private MovieService movieService;
 
-    @RabbitListener(queues = "movie-upload-queue")
+    @RabbitListener(queues = "movie-upload-metadata-queue")
     public void addMovie(String message) {
         System.out.println(message + "is being uploaded");
 
