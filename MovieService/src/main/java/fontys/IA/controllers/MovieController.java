@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
@@ -19,7 +20,7 @@ public class MovieController {
     private MovieService movieService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<String> getMovieName(@PathVariable("id") int movieId) {
+    public ResponseEntity<String> getMovieName(@PathVariable("id") String movieId) {
         System.out.println("Accessed!");
 
         // Get the movie
