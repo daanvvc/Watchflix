@@ -16,7 +16,7 @@ public class MovieUploadListener {
     private MovieFileService movieFileService;
     private MessageSender messageSender;
 
-    @RabbitListener(queues = "movie-upload-queue")
+    @RabbitListener(queues = "movie-upload-file-queue")
     public void addMovie(String message) {
         System.out.println(message + "is being uploaded");
 

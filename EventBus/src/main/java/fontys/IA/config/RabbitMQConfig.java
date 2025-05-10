@@ -19,8 +19,13 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue movieUploadQueue() {
-        return new Queue("movie-upload-queue");
+    public Queue movieUploadFileQueue() {
+        return new Queue("movie-upload-file-queue");
+    }
+
+    @Bean
+    public Queue movieUploadMetadataQueue() {
+        return new Queue("movie-upload-metadata-queue");
     }
 
     @Bean
@@ -29,16 +34,25 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding bindingA(TopicExchange topicExchange, Queue movieUploadQueue) {
+    public Binding bindingA(TopicExchange topicExchange, Queue movieUploadFileQueue) {
         String routingKeyName = "movie-upload-routing-key";
 
-        return BindingBuilder.bind(movieUploadQueue)
+        return BindingBuilder.bind(movieUploadFileQueue)
                 .to(topicExchange)
                 .with(routingKeyName);
     }
 
     @Bean
-    public Binding bindingB(TopicExchange topicExchange, Queue movieUploadStatusQueue) {
+    public Binding bindingB(TopicExchange topicExchange, Queue movieUploadMetadataQueue) {
+        String routingKeyName = "movie-upload-routing-key";
+
+        return BindingBuilder.bind(movieUploadMetadataQueue)
+                .to(topicExchange)
+                .with(routingKeyName);
+    }
+
+    @Bean
+    public Binding bindingC(TopicExchange topicExchange, Queue movieUploadStatusQueue) {
         String routingKeyName = "movie-upload-status-routing-key";
 
         return BindingBuilder.bind(movieUploadStatusQueue)
