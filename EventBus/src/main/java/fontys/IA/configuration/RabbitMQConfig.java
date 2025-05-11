@@ -1,4 +1,4 @@
-package fontys.IA.config;
+package fontys.IA.configuration;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -12,7 +12,6 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 
 @Configuration
 public class RabbitMQConfig {
-    // Makes two queue, a topic exchange and binds them
     @Bean
     public TopicExchange topicExchange() {
         return new TopicExchange("amq.topic");
@@ -25,7 +24,7 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue movieUploadMetadataQueue() {
-        return new Queue("movie-upload-metadata-queue");
+        return new Queue("movie-upload-information-queue");
     }
 
     @Bean
@@ -35,7 +34,7 @@ public class RabbitMQConfig {
 
     @Bean
     public Binding bindingA(TopicExchange topicExchange, Queue movieUploadFileQueue) {
-        String routingKeyName = "movie-upload-routing-key";
+        String routingKeyName = "movie-file-upload-routing-key";
 
         return BindingBuilder.bind(movieUploadFileQueue)
                 .to(topicExchange)
@@ -44,7 +43,7 @@ public class RabbitMQConfig {
 
     @Bean
     public Binding bindingB(TopicExchange topicExchange, Queue movieUploadMetadataQueue) {
-        String routingKeyName = "movie-upload-routing-key";
+        String routingKeyName = "movie-information-upload-routing-key";
 
         return BindingBuilder.bind(movieUploadMetadataQueue)
                 .to(topicExchange)

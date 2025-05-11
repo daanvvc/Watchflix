@@ -3,8 +3,13 @@ package fontys.IA.eventbus;
 import fontys.IA.domain.enums.Status;
 import fontys.IA.services.MovieService;
 import lombok.AllArgsConstructor;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 @Component
 @AllArgsConstructor
@@ -12,26 +17,20 @@ public class MovieUploadStatusUpdateListener {
     private MovieService movieService;
 
     @RabbitListener(queues="movie-upload-status-queue")
-    public void changeMovieUploadStatus(String message) {
-        Status status;
-        switch (message){
-            case "PENDING":
-                status = Status.PENDING;
-                break;
-            case "SUCCEEDED":
-                status = Status.SUCCEEDED;
-                break;
-            case "FAILED":
-                status = Status.FAILED;
-                break;
-            default:
+    public void changeMovieUploadStatus(Message message) {
+        String movieId = (String) message.getMessageProperties().getHeaders().get("movieId");
+
+        Status status = switch (new String(message.getBody())) {
+            case "PENDING" -> Status.PENDING;
+            case "SUCCEEDED" -> Status.SUCCEEDED;
+            case "FAILED" -> Status.FAILED;
+            default ->
                 // TODO Improve exception
-                throw new IndexOutOfBoundsException();
-        }
+                    throw new IndexOutOfBoundsException();
+        };
 
-        System.out.println(status);
+        System.out.println(movieId + ": " + status);
 
-        // TODO get id as well
-//        movieService.updateMovieUploadStatus(UUID.randomUUID().toString(), status);
+        movieService.updateMovieUploadStatus(movieId, status);
     }
 }

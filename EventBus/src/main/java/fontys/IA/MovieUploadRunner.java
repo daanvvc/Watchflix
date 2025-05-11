@@ -1,5 +1,6 @@
 package fontys.IA;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageProperties;
@@ -8,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/movieFile")
@@ -20,15 +23,27 @@ public class MovieUploadRunner {
     }
 
     @PostMapping(value = "/upload")
-    public ResponseEntity<String> uploadFile(@RequestHeader("UUID") String movieId) {
+    public ResponseEntity<String> uploadFile(@RequestHeader("UUID") String movieId,
+                                             @RequestParam("video") MultipartFile movieFile,
+                                             @RequestParam("movieInformation") String movieInformationJson) {
+
+        System.out.println(movieInformationJson);
         try {
-            Message message = MessageBuilder
-                    .withBody("Hello from RabbitMQ!".getBytes())
+            Message messageWithFile = MessageBuilder
+                    .withBody(movieFile.getBytes())
+                    .setContentType(MessageProperties.CONTENT_TYPE_BYTES)
+                    .setHeader("movieId", movieId)
+                    .build();
+
+            Message messageWithInformation = MessageBuilder
+                    .withBody(movieInformationJson.getBytes())
                     .setContentType(MessageProperties.CONTENT_TYPE_TEXT_PLAIN)
                     .setHeader("movieId", movieId)
                     .build();
 
-            rabbitTemplate.convertAndSend("amq.topic", "movie-upload-routing-key", message);
+            rabbitTemplate.convertAndSend("amq.topic", "movie-file-upload-routing-key", messageWithFile);
+            rabbitTemplate.convertAndSend("amq.topic", "movie-information-upload-routing-key", messageWithInformation);
+
             return ResponseEntity.ok("The upload request is being handled");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

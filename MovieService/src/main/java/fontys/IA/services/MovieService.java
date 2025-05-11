@@ -37,10 +37,15 @@ public class MovieService {
         movieRepository.save(movie);
     }
 
+    public List<Movie> getAll() {
+        return movieRepository.findAll();
+    }
+
     public void updateMovieUploadStatus(String movieId, Status uploadStatus) {
         if(movieRepository.findById(movieId).isPresent()){
             // TODO throw exception?
         }
+
 
         movieRepository.updateStatus(movieId, uploadStatus);
     }

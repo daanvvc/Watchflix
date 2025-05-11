@@ -1,6 +1,7 @@
 package fontys.IA.eventbus;
 
 import lombok.AllArgsConstructor;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public class MessageSender {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendMessage(String exchange, String routingKey, String message) {
+    public void sendMessage(String exchange, String routingKey, Message message) {
         rabbitTemplate.convertAndSend(exchange, routingKey, message);
     }
 }

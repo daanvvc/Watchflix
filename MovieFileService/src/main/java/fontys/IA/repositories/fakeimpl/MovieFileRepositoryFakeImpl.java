@@ -27,6 +27,12 @@ public class MovieFileRepositoryFakeImpl implements IMovieFileRepository {
     }
 
     public Optional<MovieFile> findById(String movieId) {
+        for (MovieFile movie : movieFiles) {
+            if (movie.getId().toString().equals(movieId)) {
+                return Optional.of(movie);
+            }
+        }
+
         return Optional.of(movieFiles.get(0));
     }
 
@@ -34,5 +40,9 @@ public class MovieFileRepositoryFakeImpl implements IMovieFileRepository {
         Collections.shuffle(movieFiles);
 
         return movieFiles.subList(0, numberOfMovies);
+    }
+
+    public void save(MovieFile movieFile) {
+        movieFiles.add(movieFile);
     }
 }

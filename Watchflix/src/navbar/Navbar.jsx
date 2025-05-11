@@ -15,6 +15,10 @@ const Navbar = (props) => {
           upload          
         </NavLink>
         {" "}
+        <NavLink to={"/adminMovies"}>
+          adminMovies          
+        </NavLink>
+        {" "}
         <button onClick={() => props.logout()}>
             Logout
         </button>

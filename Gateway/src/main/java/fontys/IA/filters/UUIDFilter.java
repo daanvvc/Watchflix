@@ -17,7 +17,6 @@ public class UUIDFilter extends AbstractGatewayFilterFactory<Object> {
     public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
             String uuid = UUID.randomUUID().toString();
-            System.out.println("Filter applied successfully!");
 
             // Change the http request to add a new header, which is the movieId
             ServerHttpRequest mutatedRequest = exchange.getRequest()

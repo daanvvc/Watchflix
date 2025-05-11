@@ -20,6 +20,6 @@ public class MovieFileService {
     }
 
     public void uploadMovieFile(MovieFile movieFile) {
-        // TODO
+        movieFileRepository.save(movieFile);
     }
 }

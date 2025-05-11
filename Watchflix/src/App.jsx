@@ -7,6 +7,7 @@ import supabaseClient from './auth/supabaseClient';
 import Navbar from './navbar/Navbar';
 import WatchPage from './watch/WatchPage';
 import UploadPage from './upload/UploadPage';
+import AdminMoviesPage from './adminMovies/AdminMoviesPage';
 
 function App() {
   const navigate = useNavigate();
@@ -35,13 +36,14 @@ function App() {
   return (
     loading ?
       <div>Loading...</div>
-      :
+    :
       <div className="App">
         {isLoggedIn ? (<Navbar logout={logout} email={session?.user.email}/>) : "" }
         <Routes>
           <Route path="/" element={isLoggedIn ? <HomePage /> : <LoginPage setSession={setSession} supabaseClient={supabaseClient} />}/>  
-          <Route path="/movies/:id" element={isLoggedIn ? <WatchPage /> : <Navigate to="/"/>} />
+          <Route path="/watch/:id" element={isLoggedIn ? <WatchPage /> : <Navigate to="/"/>} />
           <Route path="/upload" element={isLoggedIn ? <UploadPage /> : <Navigate to="/"/>}/>  
+          <Route path="/AdminMovies" element={isLoggedIn ? <AdminMoviesPage /> : <Navigate to="/"/>}/>  
         </Routes>
       </div>
   )

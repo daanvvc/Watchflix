@@ -6,6 +6,7 @@ import fontys.IA.repositories.IMovieRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class MovieRepositoryFakeImpl implements IMovieRepository {
@@ -34,7 +35,7 @@ public class MovieRepositoryFakeImpl implements IMovieRepository {
 
     public Optional<Movie> findById(String movieId) {
         for (Movie movie : movies) {
-            if (movie.getId().equals(movieId)) {
+            if (movie.getId().toString().equals(movieId)) {
                 return Optional.of(movie);
             }
         }
@@ -42,10 +43,19 @@ public class MovieRepositoryFakeImpl implements IMovieRepository {
         return Optional.empty();
     }
 
-    public List<Movie> findNrOfMovies(int numberOfMovies) {
-        Collections.shuffle(movies);
+    public List<Movie> findAll() {
+        List<Movie> reversedMovies = new ArrayList<>(movies);
+        Collections.reverse(reversedMovies);
+        return reversedMovies;
+    }
 
-        return movies.subList(0, numberOfMovies);
+    public List<Movie> findNrOfMovies(int numberOfMovies) {
+        List<Movie> shuffledMovies = new ArrayList<>(movies.stream()
+                .filter(movie -> movie.getUploadStatus() == Status.SUCCEEDED)
+                .toList());
+
+        Collections.shuffle(shuffledMovies);
+        return shuffledMovies.subList(0, numberOfMovies);
     }
 
     public void save(Movie movie) {
@@ -53,7 +63,7 @@ public class MovieRepositoryFakeImpl implements IMovieRepository {
     }
 
     public void updateStatus(String movieId, Status uploadStatus) {
-        Movie movie = findById(movieId).get();
-        movie.updateUploadStatus(uploadStatus);
+        Optional<Movie> movie = findById(movieId);
+        movie.ifPresent(value -> value.updateUploadStatus(uploadStatus));
     }
 }

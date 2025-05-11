@@ -21,7 +21,7 @@ public class MovieController {
 
     @GetMapping("/{id}")
     public ResponseEntity<String> getMovieName(@PathVariable("id") String movieId) {
-        System.out.println("Accessed!");
+        System.out.println("Accessed:" + movieId);
 
         // Get the movie
         Movie movie = movieService.getMovie(movieId);
@@ -42,6 +42,16 @@ public class MovieController {
         // Get the movies
         try{
             return ResponseEntity.ok(movieService.getNrOfMovies(numberOfMovies));
+        } catch (IndexOutOfBoundsException ex) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<Movie>> getAll() {
+        // Get the movies
+        try{
+            return ResponseEntity.ok(movieService.getAll());
         } catch (IndexOutOfBoundsException ex) {
             return ResponseEntity.badRequest().build();
         }
