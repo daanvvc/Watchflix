@@ -36,6 +36,7 @@ public class RabbitMQConfig {
     public Binding bindingA(TopicExchange topicExchange, Queue movieUploadFileQueue) {
         String routingKeyName = "movie-file-upload-routing-key";
 
+
         return BindingBuilder.bind(movieUploadFileQueue)
                 .to(topicExchange)
                 .with(routingKeyName);

@@ -1,6 +1,7 @@
 package fontys.IA.services;
 
 import fontys.IA.domain.Movie;
+import fontys.IA.domain.enums.Status;
 import fontys.IA.repositories.IMovieRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,11 +31,11 @@ class MovieServiceTest {
     private MovieService movieService;
 
     Movie movie;
-    String id = UUID.randomUUID().toString();
+    UUID id = UUID.randomUUID();
     String name = "The Brutalist";
     @BeforeEach
     public void BeforeEach() {
-        movie = new Movie(id, name);
+        movie = new Movie(id, name, Status.PENDING);
     }
 
     @Test
@@ -48,29 +49,29 @@ class MovieServiceTest {
         Optional<Movie> returnMovie = Optional.of(movie);
         Movie expectedMovie = movie;
 
-        when(movieMockRepository.findById(id)).thenReturn(returnMovie);
+        when(movieMockRepository.findById(id.toString())).thenReturn(returnMovie);
 
         // Act
-        Movie actualMovie = movieService.getMovie(id);
+        Movie actualMovie = movieService.getMovie(id.toString());
 
         // Assert
         assertEquals(actualMovie, expectedMovie);
-        verify(movieMockRepository, times(1)).findById(id);
+        verify(movieMockRepository, times(1)).findById(id.toString());
     }
 
     @Test
     void GetMovie_ThatDoesNotExist_SuccessTest() {
         // Arrange
-        id = UUID.randomUUID().toString();
+        id = UUID.randomUUID();
         Optional<Movie> returnMovie = Optional.empty();
 
-        when(movieMockRepository.findById(id)).thenReturn(returnMovie);
+        when(movieMockRepository.findById(id.toString())).thenReturn(returnMovie);
 
         // Act
-        Movie actualMovie = movieService.getMovie(id);
+        Movie actualMovie = movieService.getMovie(id.toString());
 
         // Assert
         assertNull(actualMovie);
-        verify(movieMockRepository, times(1)).findById(id);
+        verify(movieMockRepository, times(1)).findById(id.toString());
     }
 }

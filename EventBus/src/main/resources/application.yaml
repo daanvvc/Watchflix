@@ -1,0 +1,21 @@
+server:
+  port: 9092
+
+spring:
+  application:
+    name: MESSAGE-SERVICE
+  rabbitmq:
+    host: ${RABBITMQ_URL:localhost}
+    port: 5672
+    username: user
+    password: password
+    virtual-host: /
+  servlet:
+    multipart:
+      max-file-size: 40GB
+      max-request-size: 40GB
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}

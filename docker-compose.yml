@@ -9,6 +9,41 @@ services:
     ports:
       - '8761:8761'
 
+  RABBITMQ:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "15672:15672"  # Web management console port
+      - "5672:5672"    # AMQP protocol port
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    networks:
+      - watchflix-network
+    command:
+      bash -c "rabbitmq-plugins enable --offline rabbitmq_mqtt && rabbitmq-server"
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "check_running" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  EVENT-BUS:
+    build:
+      context: EventBus
+    image: daanvervaecke/watchflix-eventbus:latest
+    container_name: EventBus
+    networks:
+      - watchflix-network
+    ports:
+      - '9092:9092'
+    depends_on:
+      RABBITMQ:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_URL=rabbitmq
+      - EUREKA_URL=http://eureka:8761/eureka/
+
   MOVIE-SERVICE:
     build:
       context: MovieService
@@ -19,9 +54,11 @@ services:
     ports:
       - '9090:9090'
     depends_on:
-      - EUREKA
+      RABBITMQ:
+        condition: service_healthy
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - RABBITMQ_URL=rabbitmq
+      - EUREKA_URL=http://eureka:8761/eureka/
 
   MOVIE-FILE-SERVICE:
     build:
@@ -33,9 +70,11 @@ services:
     ports:
       - '9091:9091'
     depends_on:
-      - EUREKA
+      RABBITMQ:
+        condition: service_healthy
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - RABBITMQ_URL=rabbitmq
+      - EUREKA_URL=http://eureka:8761/eureka/
 
   GATEWAY:
     build:
@@ -46,8 +85,11 @@ services:
       - watchflix-network
     ports:
       - '8085:8085'
+    depends_on:
+      RABBITMQ:
+        condition: service_healthy
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_URL=http://eureka:8761/eureka/
 
   WEBAPP:
     build:
@@ -55,7 +97,7 @@ services:
     image: daanvervaecke/watchflix-webapp:latest
     container_name: Webapp
     ports:
-      - "80:80"
+      - "3000:3000"
     networks:
       - watchflix-network
     depends_on:
