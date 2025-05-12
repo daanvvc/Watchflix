@@ -2,7 +2,7 @@ name: CICD
 
 on:
   push:
-    branches: [ "main", "Sprint3" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main", "development" ]
 
