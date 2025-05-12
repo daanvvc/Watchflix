@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-    branches: [ "main", "development" ]
+    branches: [ "main", "development", "Sprint3" ]
 
 jobs:
   backend_build_test_analyze:
