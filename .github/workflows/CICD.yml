@@ -2,9 +2,9 @@ name: CICD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "Sprint3" ]
   pull_request:
-    branches: [ "main", "development", "Sprint3" ]
+    branches: [ "main", "development" ]
 
 jobs:
   backend_build_test_analyze:
