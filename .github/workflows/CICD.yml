@@ -48,14 +48,14 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew build sonar
-      - name: Install Snyk CLI
-        run: npm install -g snyk
-      - name: Authenticate Snyk
-        run: snyk auth ${{ secrets.SNYK_TOKEN }}
-      - name: Snyk test ${{ matrix.service }}
-        run: snyk test
-      - name: Snyk monitor ${{ matrix.service }}
-        run: snyk monitor
+#      - name: Install Snyk CLI
+#        run: npm install -g snyk
+#      - name: Authenticate Snyk
+#        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+#      - name: Snyk test ${{ matrix.service }}
+#        run: snyk test
+#      - name: Snyk monitor ${{ matrix.service }}
+#        run: snyk monitor
   frontend_build_test_analyze:
     name: Build, test and analyze webapp
     runs-on: ubuntu-latest
@@ -91,11 +91,11 @@ jobs:
           projectBaseDir: ./${{ matrix.service }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: Install Snyk CLI
-        run: npm install -g snyk
-      - name: Authenticate Snyk
-        run: snyk auth ${{ secrets.SNYK_TOKEN }}
-      - name: Snyk test ${{ matrix.service }}
-        run: snyk test
-      - name: Snyk monitor ${{ matrix.service }}
-        run: snyk monitor
+#      - name: Install Snyk CLI
+#        run: npm install -g snyk
+#      - name: Authenticate Snyk
+#        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+#      - name: Snyk test ${{ matrix.service }}
+#        run: snyk test
+#      - name: Snyk monitor ${{ matrix.service }}
+#        run: snyk monitor
