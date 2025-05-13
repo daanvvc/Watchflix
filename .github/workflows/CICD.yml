@@ -2,141 +2,100 @@ name: CICD
 
 on:
   push:
-    # TODO REMOVE WEEK8
-    branches: [ "main", "development", "Week8" ]
+    branches: [ "main", "Sprint3" ]
   pull_request:
-    branches: [ "main", "development", "Week8" ]
+    branches: [ "main", "development" ]
 
 jobs:
-#  build_spring_boot_services:
-#    runs-on: ubuntu-latest
-#
-#    strategy:
-#      matrix:
-#        service: [ Gateway, Eureka, MovieService, MovieFileService ]
-#
-#    steps:
-#    - uses: actions/checkout@v4
-#
-#    # So it has permission to use gradlew
-#    - name: Gradlew permission
-#      run: chmod +x ./${{ matrix.service }}/gradlew
-#
-#    - name: Cache Gradle packages
-#      uses: actions/cache@v4
-#      with:
-#        path: ~/${{ matrix.service }}/.gradle/caches
-#        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-#        restore-keys: ${{ runner.os }}-gradle
-#
-#    - name: Build ${{ matrix.service }}
-#      working-directory: ./${{ matrix.service }}
-#      run: ./gradlew build
-#
-#  unit_test_spring_boot_services:
-#    runs-on: ubuntu-latest
-#
-#    strategy:
-#      matrix:
-#        # TODO Add MovieFileService
-#        service: [ MovieService ]
-#
-#    steps:
-#      - uses: actions/checkout@v4
-#
-#      - name: Gradlew permission
-#        run: chmod +x ./${{ matrix.service }}/gradlew
-#
-#      - name: Unit test ${{ matrix.service }}
-#        working-directory: ./${{ matrix.service }}
-#        run: ./gradlew test
-
-#  sonarqube:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v4
-#        with:
-#          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-#
-#      - name: Setup JDK
-#        uses: actions/setup-java@v3
-#        with:
-#          java-version: "17"
-#          distribution: "temurin"
-#          cache: "gradle"
-#
-#      - name: Cache SonarQube packages
-#        uses: actions/cache@v4
-#        with:
-#          path: ~/MovieService/.sonar/cache
-#          key: ${{ runner.os }}-sonar
-#          restore-keys: ${{ runner.os }}-sonar
-#
-#      - name: Cache Gradle packages
-#        uses: actions/cache@v4
-#        with:
-#          path: ~/${{ matrix.service }}/.gradle/caches
-#          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-#          restore-keys: ${{ runner.os }}-gradle
-#
-#      - name: Gradlew permission
-#        run: chmod +x ./MovieService/gradlew
-
-#      - name: SonarCloud Scan
-#        uses: SonarSource/sonarcloud-github-action@master
-#        with:
-#          projectBaseDir: MovieService
-#          args: >
-#            -Dsonar.projectKey=${{ inputs.SONAR_PROJECT_KEY }}
-#            -Dsonar.organization=daanvvc
-#            -Dsonar.java.binaries=target/classes
-#        env:
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-#      - name: SonarQube
-#        env:
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#        working-directory: ./MovieService
-#        run: ./gradlew build sonar --info
-  build:
-    name: Build and analyze
+  backend_build_test_analyze:
+    name: Build, test and analyze backend services
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [ Gateway, MovieService, Eureka, MovieFileService, EventBus ]
+    defaults:
+      run:
+        working-directory: ./${{ matrix.service }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'zulu' # Alternative distribution options are available
+          distribution: 'zulu'
       - name: Gradlew permission
-        run: chmod +x ./MovieService/gradlew
+        run: chmod +x ./gradlew
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
-          path: ~/MovieService/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+         path: ~/.sonar/cache
+         key: ${{ runner.os }}-sonar
+         restore-keys: ${{ runner.os }}-sonar
       - name: Cache Gradle packages
         uses: actions/cache@v4
         with:
-          path: ~/MovieService/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
-#      - name: SonarCloud Scan
-#        uses: SonarSource/sonarcloud-github-action@master
-#        with:
-#          projectBaseDir: MovieService
-##          args: >
-##            -Dsonar.projectKey=${{ inputs.SONAR_PROJECT_KEY }}
-##            -Dsonar.organization=da
-##            -Dsonar.java.binaries=target/classes
-#        env:
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: Build and analyze
-        working-directory: ./MovieService
+         path: ~/.gradle/caches
+         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+         restore-keys: ${{ runner.os }}-gradle
+      - name: Build ${{ matrix.service }}
+        run: ./gradlew build
+      - name: Unit test (with coverage) ${{ matrix.service }}
+        run: ./gradlew test jacocoTestReport
+      - name: Sonar scan ${{ matrix.service }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonar --info
+        run: ./gradlew build sonar
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+      - name: Authenticate Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+      - name: Snyk test ${{ matrix.service }}
+        run: snyk test
+      - name: Snyk monitor ${{ matrix.service }}
+        run: snyk monitor
+  frontend_build_test_analyze:
+    name: Build, test and analyze webapp
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [ Watchflix ]
+    defaults:
+      run:
+        working-directory: ./${{ matrix.service }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm ci
+      - name: Run build ${{ matrix.service }}
+        run: npm run build
+      - name: Unit test ${{ matrix.service }}
+        run: npm test -- -- coverage
+      - name: Sonar scan ${{ matrix.service }}
+        uses: SonarSource/sonarqube-scan-action@v5
+        with:
+          projectBaseDir: ./${{ matrix.service }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+      - name: Authenticate Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+      - name: Snyk test ${{ matrix.service }}
+        run: snyk test
+      - name: Snyk monitor ${{ matrix.service }}
+        run: snyk monitor
