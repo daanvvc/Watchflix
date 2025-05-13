@@ -26,19 +26,21 @@ public class MovieUploadRunner {
     public ResponseEntity<String> uploadFile(@RequestHeader("UUID") String movieId,
                                              @RequestParam("video") MultipartFile movieFile,
                                              @RequestParam("movieInformation") String movieInformationJson) {
+        UUID uuid = UUID.fromString(movieId);
+        String sanitizedMovieId = uuid.toString();
 
         System.out.println(movieInformationJson);
         try {
             Message messageWithFile = MessageBuilder
                     .withBody(movieFile.getBytes())
                     .setContentType(MessageProperties.CONTENT_TYPE_BYTES)
-                    .setHeader("movieId", movieId)
+                    .setHeader("movieId", sanitizedMovieId )
                     .build();
 
             Message messageWithInformation = MessageBuilder
                     .withBody(movieInformationJson.getBytes())
                     .setContentType(MessageProperties.CONTENT_TYPE_TEXT_PLAIN)
-                    .setHeader("movieId", movieId)
+                    .setHeader("movieId", sanitizedMovieId )
                     .build();
 
             rabbitTemplate.convertAndSend("amq.topic", "movie-file-upload-routing-key", messageWithFile);
