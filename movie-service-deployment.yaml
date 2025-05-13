@@ -24,6 +24,12 @@ spec:
               value: "true"
             - name: EUREKA_INSTANCE_HOSTNAME
               value: movie-service
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
           image: daanvervaecke/watchflix-movieservice:latest
           name: movieservice
           ports:

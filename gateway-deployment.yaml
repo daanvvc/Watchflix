@@ -35,6 +35,12 @@ spec:
               value: "true"
             - name: EUREKA_INSTANCE_HOSTNAME
               value: gateway
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
           image: daanvervaecke/watchflix-gateway:latest
           name: gateway
           ports:

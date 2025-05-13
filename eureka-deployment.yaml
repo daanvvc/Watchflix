@@ -15,7 +15,13 @@ spec:
         io.kompose.service: eureka
     spec:
       containers:
-        - image: daanvervaecke/watchflix-eureka:latest
+        - securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+          image: daanvervaecke/watchflix-eureka:latest
           name: eureka
           ports:
             - containerPort: 8761
