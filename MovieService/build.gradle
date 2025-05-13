@@ -46,7 +46,7 @@ dependencies {
     // Force update for security reasons
     implementation 'com.thoughtworks.xstream:xstream:1.4.21'
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.4.3'
-    implementation 'org.springframework.security:spring-security-crypto:6.4.4'
+    implementation 'org.springframework.security:spring-security-crypto:6.4.5'
     implementation 'org.apache.commons:commons-configuration2:2.10.1'
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 }
