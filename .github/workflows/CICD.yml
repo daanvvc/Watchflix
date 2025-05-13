@@ -53,7 +53,7 @@ jobs:
       - name: Authenticate Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Snyk test ${{ matrix.service }}
-        run: snyk || true
+        run: snyk || echo "Snyk test completed with issues, continuing anyway"
       - name: Snyk monitor ${{ matrix.service }}
         run: snyk monitor
   frontend_build_test_analyze:
@@ -96,6 +96,6 @@ jobs:
       - name: Authenticate Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Snyk test ${{ matrix.service }}
-        run: snyk test || true
+        run: snyk test || echo "Snyk test completed with issues, continuing anyway"
       - name: Snyk monitor ${{ matrix.service }}
         run: snyk monitor

@@ -28,7 +28,12 @@ function LoginPage(props) {
     };
 
     return (
-        <Auth supabaseClient={props.supabaseClient} appearance={{ theme: ThemeSupa }} onSignUp={(error) => handleSignUpError(error)} />
+        <Auth 
+          supabaseClient={props.supabaseClient} 
+          appearance={{ theme: ThemeSupa }} 
+          providers={['github']}
+          onSignUp={(error) => handleSignUpError(error)} 
+        />
     );
 }
 
