@@ -53,13 +53,9 @@ jobs:
       - name: Authenticate Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Snyk test ${{ matrix.service }}
-        run: snyk test
-        with:
-          args: test --fail-on=never
+        run: snyk test --fail-on=never
       - name: Snyk monitor ${{ matrix.service }}
         run: snyk monitor
-        with:
-          args: test --fail-on=never
   frontend_build_test_analyze:
     name: Build, test and analyze webapp
     runs-on: ubuntu-latest
@@ -100,10 +96,6 @@ jobs:
       - name: Authenticate Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Snyk test ${{ matrix.service }}
-        run: snyk test
-        with:
-          args: test --fail-on=never
+        run: snyk test --fail-on=never
       - name: Snyk monitor ${{ matrix.service }}
         run: snyk monitor
-        with:
-          args: test --fail-on=never
