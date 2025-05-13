@@ -26,6 +26,7 @@ public class MovieUploadRunner {
     public ResponseEntity<String> uploadFile(@RequestHeader("UUID") String movieId,
                                              @RequestParam("video") MultipartFile movieFile,
                                              @RequestParam("movieInformation") String movieInformationJson) {
+        movieId = movieId.replaceAll("[\r\n]", "");
         UUID uuid = UUID.fromString(movieId);
         String sanitizedMovieId = uuid.toString();
 
