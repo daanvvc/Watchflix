@@ -87,7 +87,7 @@ jobs:
           projectBaseDir: ./${{ matrix.service }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#      - name: Snyk scan ${{ matrix.service}
-#        uses: snyk/actions/node@master
-#        env:
-#          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Snyk scan ${{ matrix.service}
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
