@@ -5,10 +5,14 @@ import { NavLink } from 'react-router-dom';
 const Navbar = (props) => {
   return (
     <div className="navbar">
-        Welcome, {props.email}
+        Welcome, {props.username}
         {" "}
         <NavLink to={"/"}>
           home          
+        </NavLink>
+        {" "}
+        <NavLink to={"/user"}>
+          {props.username}
         </NavLink>
         {" "}
         <NavLink to={"/upload"}>

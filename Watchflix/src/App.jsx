@@ -8,12 +8,15 @@ import Navbar from './navbar/Navbar';
 import WatchPage from './watch/WatchPage';
 import UploadPage from './upload/UploadPage';
 import AdminMoviesPage from './adminMovies/AdminMoviesPage';
+import UserApi from './api/UserApi';
+import UserPage from './user/UserPage';
 
 function App() {
   const navigate = useNavigate();
   const [session, setSession] = useState(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null)
 
   useEffect(() => {
     supabaseClient.auth.getSession().then(({ data: { session } }) => {
@@ -21,10 +24,31 @@ function App() {
       setIsLoggedIn(session !== null)
       setLoading(false);
     });
-  }, []);
+  }, []); 
 
   useEffect(() => {
     setIsLoggedIn(session !== null)
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && user === null) { 
+          UserApi.getUser(session.user.id)
+          .then(user => setUser(user.data))
+          .catch(async error =>{ 
+            if (error.status === 404) {
+              const userFormData = new FormData();
+              const userInformation = {
+                id: session.user.id,
+                email: session.user.email
+              }
+              userFormData.append('user', JSON.stringify(userInformation));
+
+              UserApi.addUser(userFormData)
+              .then(() => UserApi.getUser(session.user.id)
+              .then(user => setUser(user.data)))
+          }
+        }) 
+      }
+  })
   }, [session]);
 
   async function logout() {
@@ -38,12 +62,13 @@ function App() {
       <div>Loading...</div>
     :
       <div className="App">
-        {isLoggedIn ? (<Navbar logout={logout} email={session?.user.email}/>) : "" }
+        {isLoggedIn ? (<Navbar logout={logout} username={user?.username}/>) : "" }
         <Routes>
           <Route path="/" element={isLoggedIn ? <HomePage /> : <LoginPage setSession={setSession} supabaseClient={supabaseClient} />}/>  
           <Route path="/watch/:id" element={isLoggedIn ? <WatchPage /> : <Navigate to="/"/>} />
           <Route path="/upload" element={isLoggedIn ? <UploadPage /> : <Navigate to="/"/>}/>  
           <Route path="/AdminMovies" element={isLoggedIn ? <AdminMoviesPage /> : <Navigate to="/"/>}/>  
+          <Route path="/user" element={isLoggedIn ? <UserPage user={user} supabaseClient={supabaseClient} /> : <Navigate to="/"/>}/>  
         </Routes>
       </div>
   )

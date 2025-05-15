@@ -31,7 +31,6 @@ public class MovieUploadRunner {
         UUID uuid = UUID.fromString(movieId);
         String sanitizedMovieId = uuid.toString();
 
-        System.out.println(movieInformationJson);
         try {
             Message messageWithFile = MessageBuilder
                     .withBody(movieFile.getBytes())

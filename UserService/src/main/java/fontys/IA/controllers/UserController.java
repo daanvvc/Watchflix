@@ -1,15 +1,19 @@
 package fontys.IA.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fontys.IA.domain.AESEncrypter;
 import fontys.IA.domain.User;
 import fontys.IA.domain.enums.UserRole;
 import fontys.IA.services.UserService;
 import lombok.AllArgsConstructor;
+import org.bouncycastle.crypto.OutputLengthException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.SecretKey;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -20,10 +24,23 @@ public class UserController {
     AESEncrypter aesEncrypter;
 
     @PostMapping("/user")
-    public void addUser(User user) {
-        User newUser = new User(UUID.randomUUID(), user.getEmail(), user.getUsername(), UserRole.USER);
+    public ResponseEntity<Void> addUser(@RequestParam("user") String userJson) {
+        try{
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> infoMap = objectMapper.readValue(new String(userJson.getBytes()), Map.class);
 
-        userService.addUser(newUser);
+            UUID userId = UUID.fromString((String) infoMap.get("id"));
+            String email = (String) infoMap.get("email");
+            String username = email.split("@")[0];
+
+            User user = new User(userId, email, username, UserRole.USER);
+
+            userService.addUser(user);
+
+            return ResponseEntity.noContent().build();
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping("/admin")
@@ -39,7 +56,7 @@ public class UserController {
         User user = userService.getUser(userId);
 
         if (user == null) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok(user);
