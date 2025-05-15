@@ -6,20 +6,24 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: MOVIE-SERVICE
-          -uri: lb://MOVIE-SERVICE
-          predicates:
-            - Path=/movie/**
         - id: MESSAGE-SERVICE
           -uri: lb://MESSAGE-SERVICE
           predicates:
             - Path=/movieFile/upload
           filters:
             - name: UUIDFilter
+        - id: MOVIE-SERVICE
+          -uri: lb://MOVIE-SERVICE
+          predicates:
+            - Path=/movie/**
         - id: MOVIE-FILE-SERVICE
           -uri: lb://MOVIE-FILE-SERVICE
           predicates:
             - Path=/movieFile/**
+        - id: USER-SERVICE
+          -uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user/**
 
 eureka:
   client:

@@ -9,17 +9,11 @@ function LoginPage(props) {
     useEffect(() => {
         props.supabaseClient.auth.getSession().then(({ data: { session } }) => {
         props.setSession(session)
-        if (session) {
-          navigate('/dashboard'); 
-        }
       })
       const { data: { subscription } } = props.supabaseClient.auth.onAuthStateChange((_event, session) => {
       try {
         console.log("Auth state changed");
         props.setSession(session);
-        if (session) {
-          navigate('/dashboard'); 
-        }
       } catch (error) {
         console.error('Error handling auth state change:', error);
       }

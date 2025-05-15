@@ -1,0 +1,20 @@
+server:
+  port: 9093
+
+spring:
+  application:
+    name: USER-SERVICE
+#  rabbitmq:
+#    host: ${RABBITMQ_URL:localhost}
+#    port: 5672
+#    username: user
+#    password: password
+#    virtual-host: /
+
+encryption:
+  secret-key: ${SECRET_KEY_AES}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
