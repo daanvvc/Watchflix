@@ -27,9 +27,14 @@ function SetupMFA(props) {
       factorId,
       code,
     }).
-    then((result) => {
-        console.log(result)
-        setStatus("MFA setup complete!");
+    then(result => {
+        if (result.error) {
+            setStatus("Invalid code. Try again.");
+        } else {
+            console.log(result)
+            setStatus("MFA setup complete!");
+        }
+
     })
     .catch(error => {
         console.error("Verify error:", error);
@@ -54,8 +59,6 @@ function SetupMFA(props) {
           <button onClick={handleVerify}>Verify Code</button>
         </div>
       )}
-
-      {status && !qrCode && <p>{status}</p>}
     </>
   );
 }
