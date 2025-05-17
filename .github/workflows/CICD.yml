@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [ Gateway, MovieService, Eureka, MovieFileService, EventBus ]
+        service: [ Gateway, MovieService, Eureka, MovieFileService, EventBus, UserService ]
       fail-fast: false
     defaults:
       run:
