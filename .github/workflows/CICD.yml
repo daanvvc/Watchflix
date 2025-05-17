@@ -13,6 +13,7 @@ jobs:
     strategy:
       matrix:
         service: [ Gateway, MovieService, Eureka, MovieFileService, EventBus ]
+      fail-fast: false
     defaults:
       run:
         working-directory: ./${{ matrix.service }}
