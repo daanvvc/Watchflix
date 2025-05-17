@@ -23,10 +23,11 @@ public class MovieUploadStatusUpdateListener {
         Status status = switch (new String(message.getBody())) {
             case "PENDING" -> Status.PENDING;
             case "SUCCEEDED" -> Status.SUCCEEDED;
-            case "FAILED" -> Status.FAILED;
+            case "SECURITY_FAIL" -> Status.SECURITY_FAIL;
+            case "OTHER_FAIL" -> Status.OTHER_FAIL;
             default ->
                 // TODO Improve exception
-                    throw new IndexOutOfBoundsException();
+                throw new IndexOutOfBoundsException();
         };
 
         System.out.println(movieId + ": " + status);

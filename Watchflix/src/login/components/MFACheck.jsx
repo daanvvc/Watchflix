@@ -10,7 +10,14 @@ function MFACheck({ supabaseClient, factorId, challengeId, onVerified }) {
       challengeId,
       code,
     })
-    .then (() => onVerified())
+    .then ((result) => {
+      if (result.error) {
+        console.error('MFA verify error', error);
+        setError('Invalid code. Try again.');
+        return;
+      }
+      onVerified(); 
+    })
     .catch(error => {
         console.error('MFA verify error', error);
         setError('Invalid code. Try again.');

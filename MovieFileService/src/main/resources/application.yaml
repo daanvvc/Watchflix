@@ -10,10 +10,15 @@ spring:
     username: user
     password: password
     virtual-host: /
-    servlet:
-      multipart:
-        max-file-size: 40GB
-        max-request-size: 40GB
+  servlet:
+    multipart:
+      max-file-size: 32GB
+      max-request-size: 32GB
+
+virustotal:
+  api:
+    key: ${VIRUSTOTAL_API_KEY}
+
 
 eureka:
   client:

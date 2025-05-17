@@ -44,6 +44,7 @@ class MovieServiceTest {
     }
 
     @Test
+    // Successfully gets a movie from the mock repository
     void GetMovie_SuccessTest() {
         // Arrange
         Optional<Movie> returnMovie = Optional.of(movie);
@@ -60,6 +61,7 @@ class MovieServiceTest {
     }
 
     @Test
+    // Gets a movie from the mock repository that does not exist
     void GetMovie_ThatDoesNotExist_SuccessTest() {
         // Arrange
         id = UUID.randomUUID();

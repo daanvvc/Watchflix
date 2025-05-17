@@ -5,6 +5,16 @@ spring:
     name: GATEWAY
   cloud:
     gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+            allowedHeaders: "*"
       routes:
         - id: MESSAGE-SERVICE
           -uri: lb://MESSAGE-SERVICE
@@ -24,7 +34,6 @@ spring:
           -uri: lb://USER-SERVICE
           predicates:
             - Path=/user/**
-
 eureka:
   client:
     serviceUrl:

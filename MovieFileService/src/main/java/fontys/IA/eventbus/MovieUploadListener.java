@@ -23,29 +23,24 @@ public class MovieUploadListener {
 
     @RabbitListener(queues = "movie-upload-file-queue")
     public void addMovie(Message message) {
-        String messageBody = new String(message.getBody());
+        System.out.println("Working...");
         UUID movieId = UUID.fromString((String) message.getMessageProperties().getHeaders().get("movieId"));
 
-        System.out.println("Uploading with movieId:" + movieId);
-
-        // TODO Check if malicious file
+        String filename = movieId.toString() + ".mp4";
 
         Resource movieResource = new ByteArrayResource(message.getBody());
-        MovieFile movieFile = new MovieFile(movieId, movieResource, messageBody);
+        MovieFile movieFile = new MovieFile(movieId, movieResource, filename);
 
         String upload_status = "SUCCEEDED";
         // Get the movie
         try {
             movieFileService.uploadMovieFile(movieFile);
+        } catch (SecurityException ex) {
+            upload_status = "SECURITY_FAIL";
+            System.out.println(ex);
         } catch (Exception ex) {
-            upload_status = "FAILED";
-        }
-
-        // Wait 10 seconds
-        try {
-            TimeUnit.SECONDS.sleep(10);
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
+            upload_status = "OTHER_FAIL";
+            System.out.println(ex);
         }
 
         Message messageWithStatus = MessageBuilder

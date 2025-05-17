@@ -33,8 +33,13 @@ function UploadPage() {
 
         // Upload the movie file
         MovieFileApi.uploadMovieFile(formData)
-            .then(() => setOutputText("Movie file upload is being handled!"))
-            .catch(() => setOutputText("Something went wrong!"))
+            .then((result) => {
+                setOutputText("Movie file upload is being handled!")
+            })
+            .catch((error) => { 
+                console.log(error)
+                setOutputText("Something went wrong!")
+            })
     }
 
     return (

@@ -12,8 +12,8 @@ spring:
     virtual-host: /
   servlet:
     multipart:
-      max-file-size: 40GB
-      max-request-size: 40GB
+      max-file-size: 32GB
+      max-request-size: 32GB
 
 eureka:
   client:

@@ -25,6 +25,7 @@ function CurrentMFA(props) {
     })
   };
 
+  // Table from https://supabase.com/docs/guides/auth/auth-mfa
   return (
     <table>
         <tbody>
