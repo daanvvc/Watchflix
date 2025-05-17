@@ -42,9 +42,11 @@ jobs:
          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
          restore-keys: ${{ runner.os }}-gradle
       - name: Build ${{ matrix.service }}
-        run: ./gradlew build
+        run: ./gradlew build -x test
       - name: Unit test (with coverage) ${{ matrix.service }}
         run: ./gradlew test jacocoTestReport
+        env:
+          VIRUSTOTAL_API_KEY: ${{ matrix.service == 'MovieFileService' && secrets.VIRUSTOTAL_API_KEY || '' }}
       - name: Sonar scan ${{ matrix.service }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
