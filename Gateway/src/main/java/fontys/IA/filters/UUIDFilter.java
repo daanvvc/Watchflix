@@ -28,5 +28,3 @@ public class UUIDFilter extends AbstractGatewayFilterFactory<Object> {
         };
     }
 }
-
-

@@ -26,7 +26,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         ServerHttpRequest request = exchange.getRequest();
         String authHeader = request.getHeaders().getFirst("Authorization");
 
-        // Check if the request has a auth header
+        // Check if the request has an auth header
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();

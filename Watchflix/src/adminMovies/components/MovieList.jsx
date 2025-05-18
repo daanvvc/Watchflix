@@ -5,23 +5,32 @@ import { isArray } from 'tls';
 
 const MovieList = () => {
   const [movies, setMovies] = useState([])
+  const [error, setError] = useState([])
 
   useEffect(() => {
     MovieApi.getAllMovies()
     .then(result => isArray(result.data) ? setMovies(result.data) : setMovies([]))
-    .catch(error => {console.log(error); setMovies([])})
+    .catch(error => {
+      if (error.message = "Network Error" || error.status === 503) {
+        setError("Movies cannot be  loaded due to a Watchflix error")
+      }
+      console.log(error);
+      setMovies([])})
   }, [])
 
   return (
-    <ul>
-        {movies.map(movie => {
-            return (
-              <li key={movie.name}>
-                  {movie.name}: {movie.uploadStatus}
-              </li>
-              )
-        })}    
-    </ul> 
+    <>
+      <p>{error}</p>
+      <ul>
+          {movies.map(movie => {
+              return (
+                <li key={movie.name}>
+                    {movie.name}: {movie.uploadStatus}
+                </li>
+                )
+          })}    
+      </ul> 
+    </>
   );
 };
 
