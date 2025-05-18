@@ -20,7 +20,6 @@ describe('movie_list_test', () => {
 
     it('testing tests', async () => {
         expect(true).toBe(true)
-
     })    
 
     it('tests movielist', async () => {

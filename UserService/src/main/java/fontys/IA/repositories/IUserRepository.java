@@ -7,4 +7,5 @@ import java.util.Optional;
 public interface IUserRepository {
     void save(User user);
     Optional<User> findById(String userId);
+    Optional<String> findRoleById(String userId);
 }

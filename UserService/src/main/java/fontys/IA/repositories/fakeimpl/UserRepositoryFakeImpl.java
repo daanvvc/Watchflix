@@ -35,6 +35,16 @@ public class UserRepositoryFakeImpl implements IUserRepository {
 
         return Optional.empty();
     }
+
+    public Optional<String> findRoleById(String userId) {
+        for (User user : users) {
+            if (user.getId().toString().equals(userId)) {
+                return Optional.of(user.getRole().toString());
+            }
+        }
+
+        return Optional.empty();
+    }
     public void save(User user) {
         users.add(user);
     }

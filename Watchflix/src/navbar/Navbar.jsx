@@ -1,8 +1,8 @@
-import React from 'react';
 import './Navbar.css'
 import { NavLink } from 'react-router-dom';
 
 const Navbar = (props) => {
+  console.log(props.isAdmin)
   return (
     <div className="navbar">
         Welcome, {props.username}
@@ -15,14 +15,18 @@ const Navbar = (props) => {
           {props.username}
         </NavLink>
         {" "}
-        <NavLink to={"/upload"}>
-          upload          
-        </NavLink>
-        {" "}
-        <NavLink to={"/adminMovies"}>
-          adminMovies          
-        </NavLink>
-        {" "}
+        {props.isAdmin && 
+        <>
+          <NavLink to={"/upload"}>
+            upload          
+          </NavLink>
+          {" "}
+          <NavLink to={"/adminMovies"}>
+            adminMovies          
+          </NavLink>
+          {" "}
+        </>
+        }
         <button onClick={() => props.logout()}>
             Logout
         </button>

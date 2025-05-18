@@ -44,21 +44,54 @@ public class UserController {
     }
 
     @PostMapping("/admin")
-    public void addAdmin(User admin) {
+    public ResponseEntity<Void> addAdmin(@RequestHeader("X-User-Id") String userId, User admin) {
+        // Check that the user who is adding the admin is also an admin
+        if (userService.getUser(userId).getRole() != UserRole.ADMIN) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         User newAdmin = new User(UUID.randomUUID(), admin.getEmail(), admin.getUsername(), UserRole.ADMIN);
 
         userService.addUser(newAdmin);
+
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable("id") String userId) {
+    public ResponseEntity<User> getUser(@RequestHeader("X-User-Id") String userIdRequester,
+                                        @PathVariable("id") String requestedUserId) {
+        // Check that the user who is requesting user data is authorized to do so
+        // (User can only get their own data)
+        if (!userIdRequester.equals(requestedUserId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         // Get the user
-        User user = userService.getUser(userId);
+        User user = userService.getUser(requestedUserId);
 
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/role/{id}")
+    public ResponseEntity<String> getRole(@RequestHeader("X-User-Id") String userIdRequester,
+                                        @PathVariable("id") String requestedUserId) {
+        // Check that the user who is requesting user data is authorized to do so
+        // (User can only get their own data)
+        if (!userIdRequester.equals(requestedUserId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // Get the user
+        String userRole = userService.getRole(requestedUserId);
+
+        if (userRole == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(userRole);
     }
 }

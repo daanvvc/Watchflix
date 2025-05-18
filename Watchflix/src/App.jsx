@@ -15,6 +15,7 @@ function App() {
   const navigate = useNavigate();
   const [session, setSession] = useState(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(null)
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null)
 
@@ -22,7 +23,6 @@ function App() {
     supabaseClient.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
       setIsLoggedIn(session !== null)
-      setLoading(false);
     });
   }, []); 
 
@@ -30,7 +30,8 @@ function App() {
     setIsLoggedIn(session !== null)
 
     supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && user === null) { 
+      if (event === 'SIGNED_IN' && user === null) {
+        console.log(user) 
           UserApi.getUser(session.user.id)
           .then(user => setUser(user.data))
           .catch(async error =>{ 
@@ -51,6 +52,26 @@ function App() {
   })
   }, [session]);
 
+  useEffect(() => {
+    let timeout;
+
+    if (loading) {
+      timeout = setTimeout(() => {
+        if (!user?.role) {
+          console.warn("User role not set after timeout, proceeding anyway");
+          setLoading(false);
+        }
+      }, 1000); // 1 second
+    }
+
+    if (user?.role) {
+      setIsAdmin(user.role === "ADMIN")
+      setLoading(false);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [user])
+
   async function logout() {
     await supabaseClient.auth.signOut()
     setSession(null)
@@ -62,12 +83,12 @@ function App() {
       <div>Loading...</div>
     :
       <div className="App">
-        {isLoggedIn ? (<Navbar logout={logout} username={user?.username}/>) : "" }
+        {isLoggedIn ? (<Navbar logout={logout} username={user?.username} isAdmin={isAdmin}/>) : "" }
         <Routes>
           <Route path="/" element={isLoggedIn ? <HomePage /> : <LoginPage setSession={setSession} supabaseClient={supabaseClient} />}/>  
           <Route path="/watch/:id" element={isLoggedIn ? <WatchPage /> : <Navigate to="/"/>} />
-          <Route path="/upload" element={isLoggedIn ? <UploadPage /> : <Navigate to="/"/>}/>  
-          <Route path="/AdminMovies" element={isLoggedIn ? <AdminMoviesPage /> : <Navigate to="/"/>}/>  
+          <Route path="/upload" element={isLoggedIn && isAdmin ? <UploadPage /> : <Navigate to="/"/>}/>  
+          <Route path="/AdminMovies" element={isLoggedIn && isAdmin ? <AdminMoviesPage /> : <Navigate to="/"/>}/>  
           <Route path="/user" element={isLoggedIn ? <UserPage user={user} supabaseClient={supabaseClient} /> : <Navigate to="/"/>}/>  
         </Routes>
       </div>

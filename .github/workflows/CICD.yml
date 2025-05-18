@@ -63,6 +63,7 @@ jobs:
     strategy:
       matrix:
         service: [ Watchflix ]
+      fail-fast: false
     defaults:
       run:
         working-directory: ./${{ matrix.service }}
@@ -85,7 +86,7 @@ jobs:
       - name: Run build ${{ matrix.service }}
         run: npm run build
       - name: Unit test ${{ matrix.service }}
-        run: npm test -- -- coverage
+        run: npm test
       - name: Sonar scan ${{ matrix.service }}
         uses: SonarSource/sonarqube-scan-action@v5
         with:

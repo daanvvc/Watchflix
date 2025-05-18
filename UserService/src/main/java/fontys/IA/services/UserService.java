@@ -38,4 +38,10 @@ public class UserService {
 
         return returnUser;
     }
+
+    public String getRole(String userId) {
+        Optional<String> userRole = userRepository.findRoleById(userId);
+
+        return userRole.orElse(null);
+    }
 }
