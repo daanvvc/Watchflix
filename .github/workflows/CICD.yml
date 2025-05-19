@@ -52,11 +52,11 @@ jobs:
       - name: Build Docker image ${{ matrix.service }}
         run: |
           IMAGE_NAME=$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
-          docker build -t daanvervaecke/watchlist-$IMAGE_NAME:latest .
+          docker build -t daanvervaecke/watchflix-$IMAGE_NAME:latest .
       - name: Push Docker image of ${{ matrix.service }} to Docker Hub
         run: |
           IMAGE_NAME=$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
-          docker push daanvervaecke/watchlist-$IMAGE_NAME:latest
+          docker push daanvervaecke/watchflix-$IMAGE_NAME:latest
       - name: Sonar scan ${{ matrix.service }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
