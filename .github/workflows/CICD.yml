@@ -7,7 +7,7 @@ on:
     branches: [ "main", "development" ]
 
 jobs:
-  backend_build_test_analyze:
+  backend_service:
     name: Build, test and analyze backend services
     runs-on: ubuntu-latest
     strategy:
@@ -47,6 +47,14 @@ jobs:
         run: ./gradlew test jacocoTestReport
         env:
           VIRUSTOTAL_API_KEY: ${{ matrix.service == 'MovieFileService' && secrets.VIRUSTOTAL_API_KEY || '' }}
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u daanvervaecke --password-stdin
+      - name: Build Docker image ${{ matrix.service }}
+        run: IMAGE_NAME=$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
+          docker build -t daanvervaecke/watchflix-$IMAGE_NAME:latest .
+      - name: Push Docker image of ${{ matrix.service }} to Docker Hub
+        run: IMAGE_NAME=$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
+          docker push daanvervaecke/watchflix-$IMAGE_NAME:latest
       - name: Sonar scan ${{ matrix.service }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -57,7 +65,7 @@ jobs:
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Snyk monitor ${{ matrix.service }}
         run: snyk monitor
-  frontend_build_test_analyze:
+  frontend_service:
     name: Build, test and analyze webapp
     runs-on: ubuntu-latest
     strategy:
@@ -87,6 +95,12 @@ jobs:
         run: npm run build
       - name: Unit test ${{ matrix.service }}
         run: npm test
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u daanvervaecke --password-stdin
+      - name: Build Docker image ${{ matrix.service }}
+        run: docker build -t daanvervaecke/watchflix-webapp:latest .
+      - name: Push Docker image of ${{ matrix.service }} to Docker Hub
+        run: docker push daanvervaecke/watchflix-webapp:latest
       - name: Sonar scan ${{ matrix.service }}
         uses: SonarSource/sonarqube-scan-action@v5
         with:
