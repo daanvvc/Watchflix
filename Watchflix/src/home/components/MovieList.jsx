@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import MovieApi from '../../api/MovieApi';
 import { NavLink } from 'react-router-dom';
 import { isArray } from 'tls';

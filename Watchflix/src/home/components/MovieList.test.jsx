@@ -1,6 +1,5 @@
 import { expect, describe, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
-import React from 'react'
 import MovieList from "./MovieList.jsx"
 import MovieApi from '../../api/MovieApi.jsx'
 import { BrowserRouter } from 'react-router-dom'
@@ -10,7 +9,13 @@ vi.mock('./MovieApi', () => ({
     default: {
       getMovies: vi.fn(),
     },
-  }))
+}))
+
+vi.mock('../../api/TokenManager', () => ({
+  default: {
+    getAccessToken: () => 'fake-token',
+  },
+}))
 
 describe('movie_list_test', () => {
 

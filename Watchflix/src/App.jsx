@@ -61,7 +61,7 @@ function App() {
           console.warn("User role not set after timeout, proceeding anyway");
           setLoading(false);
         }
-      }, 1000); // 1 second
+      }, 500); // 0.5 seconds
     }
 
     if (user?.role) {
