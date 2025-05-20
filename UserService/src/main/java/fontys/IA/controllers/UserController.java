@@ -69,6 +69,11 @@ public class UserController {
         // Get the user
         User user = userService.getUser(requestedUserId);
 
+        UserRole userRole = userService.getRole(requestedUserId);
+
+        System.out.println(userRole);
+
+
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
@@ -86,12 +91,12 @@ public class UserController {
         }
 
         // Get the user
-        String userRole = userService.getRole(requestedUserId);
+        UserRole userRole = userService.getRole(requestedUserId);
 
         if (userRole == null) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(userRole);
+        return ResponseEntity.ok(userRole.toString());
     }
 }

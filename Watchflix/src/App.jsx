@@ -31,7 +31,6 @@ function App() {
 
     supabaseClient.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && user === null) {
-        console.log(user) 
           UserApi.getUser(session.user.id)
           .then(user => setUser(user.data))
           .catch(async error =>{ 

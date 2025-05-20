@@ -2,13 +2,14 @@ package fontys.IA.services;
 
 import fontys.IA.domain.AESEncrypter;
 import fontys.IA.domain.User;
+import fontys.IA.domain.enums.UserRole;
 import fontys.IA.repositories.IUserRepository;
 import lombok.AllArgsConstructor;
-import org.bouncycastle.jcajce.provider.symmetric.AES;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -16,7 +17,7 @@ public class UserService {
     private IUserRepository userRepository;
 
     public void addUser(User user) {
-        if(userRepository.findById(user.getId().toString()).isPresent()){
+        if(userRepository.findById(user.getId()).isPresent()){
             // TODO throw exception?
         }
 
@@ -27,7 +28,7 @@ public class UserService {
     }
 
     public User getUser(String userId) {
-        Optional<User> user = userRepository.findById(userId);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
 
         if (user.isEmpty()) {
             return null;
@@ -39,8 +40,8 @@ public class UserService {
         return returnUser;
     }
 
-    public String getRole(String userId) {
-        Optional<String> userRole = userRepository.findRoleById(userId);
+    public UserRole getRole(String userId) {
+        Optional<UserRole> userRole = userRepository.findRoleById(UUID.fromString(userId));
 
         return userRole.orElse(null);
     }

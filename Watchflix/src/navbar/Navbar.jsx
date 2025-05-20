@@ -2,7 +2,6 @@ import './Navbar.css'
 import { NavLink } from 'react-router-dom';
 
 const Navbar = (props) => {
-  console.log(props.isAdmin)
   return (
     <div className="navbar">
         Welcome, {props.username}
