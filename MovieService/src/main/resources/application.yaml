@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: MOVIE-SERVICE
+  data:
+    mongodb:
+      uri: mongodb+srv://daanvvc:${SECRET_KEY_ATLAS}@watchflix.xalddl7.mongodb.net
+      database: watchflix
   rabbitmq:
     host: ${RABBITMQ_URL:localhost}
     port: 5672

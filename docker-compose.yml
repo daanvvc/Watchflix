@@ -59,6 +59,7 @@ services:
     environment:
       - RABBITMQ_URL=rabbitmq
       - EUREKA_URL=http://eureka:8761/eureka/
+      - SECRET_KEY_ATLAS
 
   MOVIE-FILE-SERVICE:
     build:

@@ -50,14 +50,14 @@ class MovieServiceTest {
         Optional<Movie> returnMovie = Optional.of(movie);
         Movie expectedMovie = movie;
 
-        when(movieMockRepository.findById(id.toString())).thenReturn(returnMovie);
+        when(movieMockRepository.findById(id)).thenReturn(returnMovie);
 
         // Act
         Movie actualMovie = movieService.getMovie(id.toString());
 
         // Assert
         assertEquals(actualMovie, expectedMovie);
-        verify(movieMockRepository, times(1)).findById(id.toString());
+        verify(movieMockRepository, times(1)).findById(id);
     }
 
     @Test
@@ -67,13 +67,13 @@ class MovieServiceTest {
         id = UUID.randomUUID();
         Optional<Movie> returnMovie = Optional.empty();
 
-        when(movieMockRepository.findById(id.toString())).thenReturn(returnMovie);
+        when(movieMockRepository.findById(id)).thenReturn(returnMovie);
 
         // Act
         Movie actualMovie = movieService.getMovie(id.toString());
 
         // Assert
         assertNull(actualMovie);
-        verify(movieMockRepository, times(1)).findById(id.toString());
+        verify(movieMockRepository, times(1)).findById(id);
     }
 }

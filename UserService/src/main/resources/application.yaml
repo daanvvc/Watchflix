@@ -13,8 +13,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      # Prevent Hibernate from automatically modifying the schema (since Flyway)
-      ddl-auto: validate
+      ddl-auto: validate # Prevent Hibernate from automatically modifying the schema (since Flyway)
   flyway:
     enabled: true
     locations: classpath:db/migration
