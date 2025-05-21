@@ -1,17 +1,15 @@
-package fontys.IA.services;
-
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import java.io.*;
 import java.nio.file.*;
 
-public class test {
+public class MakingEicarMP4 {
     public static void main(String[] args) throws IOException {
         // Load MP4 file from resources
         Resource resource = new ClassPathResource("valid-mp4-with-h264.mp4");
 
-        // Create a temporary or target location to write the modified file
+        // Create a temporary location to write the modified file
         Path modifiedFile = Paths.get("target/eicar-test-file.mp4");
         Files.createDirectories(modifiedFile.getParent());
 
@@ -26,6 +24,6 @@ public class test {
             fos.write(eicarString.getBytes());
         }
 
-        System.out.println("✅ EICAR string appended to MP4 file at: " + modifiedFile.toAbsolutePath());
+        System.out.println("EICAR string appended to MP4 file at: " + modifiedFile.toAbsolutePath());
     }
 }

@@ -84,22 +84,37 @@ public class SafeUploadService {
             }
         });
 
-        // Post the request
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                "https://www.virustotal.com/api/v3/files",
-                requestEntity,
-                String.class);
+        IOException exThrown = null;
 
-        // Parse the response to get the analysis ID
-        JsonNode root = objectMapper.readTree(response.getBody());
-        String analysisId = root.path("data").path("id").asText();
+        // Sometimes the VirusTotal scan results are so quickly deleted, the post request needs to be posted again.
+        // This is tried ten times, after which it is probable VirusTotal is down
+        for (int i = 0; i < 10; i++) {
+            try {
+                // Post the request
+                HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+                ResponseEntity<String> response = restTemplate.postForEntity(
+                        "https://www.virustotal.com/api/v3/files",
+                        requestEntity,
+                        String.class);
 
-        // Wait and check the analysis results
-        return checkAnalysisResult(analysisId);
+                // Parse the response to get the analysis ID
+                JsonNode root = objectMapper.readTree(response.getBody());
+                String analysisId = root.path("data").path("id").asText();
+
+                // Wait and check the analysis results
+                boolean scanResults = getScanResults(analysisId);
+
+                return scanResults;
+            } catch (IOException ex) {
+                System.out.println("Exception was thrown!: " + ex.getMessage());
+                exThrown = ex;
+            }
+        }
+
+        throw exThrown;
     }
 
-    private boolean checkAnalysisResult(String analysisId) throws IOException {
+    private boolean getScanResults(String analysisId) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.set("x-apikey", apiKey);
 
@@ -127,7 +142,7 @@ public class SafeUploadService {
             }
 
             try {
-                Thread.sleep(5000); // Wait 5 seconds between checks
+                Thread.sleep(3000); // Wait 3 seconds between checks
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new IOException("Interrupted while waiting for scan results", e);
