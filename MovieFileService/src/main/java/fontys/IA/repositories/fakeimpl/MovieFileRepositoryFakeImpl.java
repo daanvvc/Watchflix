@@ -14,7 +14,6 @@ import java.nio.file.Paths;
 import java.util.*;
 
 
-@Repository
 public class MovieFileRepositoryFakeImpl implements IMovieFileRepository {
     private List<MovieFile> movieFiles;
 
@@ -34,12 +33,6 @@ public class MovieFileRepositoryFakeImpl implements IMovieFileRepository {
         }
 
         return Optional.of(movieFiles.get(0));
-    }
-
-    public List<MovieFile> findNrOfMovies(int numberOfMovies) {
-        Collections.shuffle(movieFiles);
-
-        return movieFiles.subList(0, numberOfMovies);
     }
 
     public void save(MovieFile movieFile) {

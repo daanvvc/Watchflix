@@ -9,6 +9,5 @@ import java.util.UUID;
 
 public interface IMovieFileRepository {
     Optional<MovieFile> findById(String MovieId);
-    List<MovieFile> findNrOfMovies(int numberOfMovies);
     void save(MovieFile movieFile);
     }

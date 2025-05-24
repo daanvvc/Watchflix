@@ -12,9 +12,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface IMovieRepository extends MongoRepository<Movie, UUID> {
-    @Query("{ 'id': ?0 }")
-    @Update("{ '$set': { 'uploadStatus': ?1 } }")
-    long updateStatus(UUID movieId, Status uploadStatus);
+    @Query("{ 'id': ?0, 'version': ?2 }")
+    @Update("{ '$set': { 'uploadStatus': ?1 }, '$inc': { 'version': 1 } }")
+    long updateStatus(UUID movieId, Status uploadStatus, long currentVersion);
+
 
     List<Movie> findByUploadStatus(Status status, Pageable pageable);
 }

@@ -5,6 +5,7 @@ import fontys.IA.domain.enums.Status;
 import fontys.IA.repositories.IMovieRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -52,10 +53,12 @@ public class MovieService {
     }
 
     public void updateMovieUploadStatus(String movieId, Status uploadStatus) {
-        if(movieRepository.findById(UUID.fromString(movieId)).isPresent()){
-            // TODO throw exception?
-        }
+        Movie movie = movieRepository.findById(UUID.fromString(movieId)).orElseThrow();
 
-        movieRepository.updateStatus(UUID.fromString(movieId), uploadStatus);
+        long updated = movieRepository.updateStatus(UUID.fromString(movieId), uploadStatus, movie.getVersion());
+
+        if (updated == 0) {
+            throw new OptimisticLockingFailureException("Update failed due to version conflict");
+        }
     }
 }

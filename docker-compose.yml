@@ -77,6 +77,7 @@ services:
       - RABBITMQ_URL=rabbitmq
       - EUREKA_URL=http://eureka:8761/eureka/
       - VIRUSTOTAL_API_KEY
+      - AZUREBLOB_API_KEY
         
   USER-SERVICE:
     build:
