@@ -15,6 +15,8 @@ import reactor.core.publisher.Mono;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class AuthenticationFilter implements GlobalFilter, Ordered {
@@ -22,8 +24,15 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     private String SUPABASE_JWT_SECRET;
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain  chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
+        String path = request.getPath().toString();
+
+        // Skip authentication for getting video files, since it broke
+        if ("GET".equalsIgnoreCase(request.getMethod().name()) && path.matches("^/movieFile/[^/]+$")) {
+            return chain.filter(exchange);
+        }
+
         String authHeader = request.getHeaders().getFirst("Authorization");
 
         // Check if the request has an auth header

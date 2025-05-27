@@ -35,6 +35,10 @@ public class MovieFileController {
         // Get the movie
         MovieFile movieFile = movieFileService.getMovieFile(movieId);
 
+        System.out.println("Movie was gotten");
+        System.out.println("File exists: " + movieFile.getFile().exists());
+        System.out.println("Can read: " + movieFile.getFile().isReadable());
+
         if (movieFile == null) {
             System.out.println("This movie doesn't exist!");
             // TODO Which error?
@@ -47,6 +51,7 @@ public class MovieFileController {
                 .body(movieFile.getFile());
     }
 
+    // Upload endpoint for testing
     @PostMapping(value = "/upload")
     public void uploadFile(@RequestParam("video") MultipartFile file) throws IOException {
         try {

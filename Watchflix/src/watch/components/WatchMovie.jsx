@@ -9,7 +9,7 @@ const WatchMovie = (props) => {
         MovieFileApi.getMovieFile(props.movieId)
         .then(result => setVideoUrl(result.config.url))
     .catch(error => {
-      if (error.message = "Network Error" || error.status === 503) {
+      if (error.message === "Network Error" || error.status === 503) {
         setError("Watchflix isn't working right now")
       }
       console.log(error);

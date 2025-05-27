@@ -1,7 +1,5 @@
 server:
   port: 9091
-  tomcat:
-    connection-timeout: 300s
 
 spring:
   application:
@@ -16,10 +14,6 @@ spring:
     multipart:
       max-file-size: 32GB
       max-request-size: 32GB
-      enabled: true
-  mvc:
-    async:
-      request-timeout: 300000
 
 virustotal:
   api:
