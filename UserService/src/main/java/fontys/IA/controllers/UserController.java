@@ -6,13 +6,18 @@ import fontys.IA.domain.User;
 import fontys.IA.domain.enums.UserRole;
 import fontys.IA.services.UserService;
 import lombok.AllArgsConstructor;
+import org.apache.hc.core5.http.HttpHeaders;
 import org.bouncycastle.crypto.OutputLengthException;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.SecretKey;
+import java.io.File;
 import java.util.Map;
 import java.util.UUID;
 
@@ -73,7 +78,6 @@ public class UserController {
 
         System.out.println(userRole);
 
-
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
@@ -98,5 +102,47 @@ public class UserController {
         }
 
         return ResponseEntity.ok(userRole.toString());
+    }
+
+    @GetMapping("/access/{id}")
+    public ResponseEntity<Resource> rightOfAccess(@RequestHeader("X-User-Id") String userIdRequester,
+                                          @PathVariable("id") String requestedUserId) {
+        // Check that the user who is requesting user data is authorized to do so
+        // (User can only get their own data)
+        if (!userIdRequester.equals(requestedUserId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // Get the user information
+        try {
+            File userInformation = userService.rightOfAccess(requestedUserId);
+            Resource fileResource = new FileSystemResource(userInformation);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + userInformation.getName() + "\"")
+                    .body(fileResource);        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@RequestHeader("X-User-Id") String userIdRequester,
+                                        @PathVariable("id") String requestedUserId) {
+        // Check that the user who is requesting user data is authorized to do so
+        // (User can only delete their own data)
+        if (!userIdRequester.equals(requestedUserId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+            userService.deleteUser(requestedUserId);
+
+            return ResponseEntity.ok().build();
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

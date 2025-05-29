@@ -88,7 +88,7 @@ function App() {
           <Route path="/watch/:id" element={isLoggedIn ? <WatchPage /> : <Navigate to="/"/>} />
           <Route path="/upload" element={isLoggedIn && isAdmin ? <UploadPage /> : <Navigate to="/"/>}/>  
           <Route path="/AdminMovies" element={isLoggedIn && isAdmin ? <AdminMoviesPage /> : <Navigate to="/"/>}/>  
-          <Route path="/user" element={isLoggedIn ? <UserPage user={user} supabaseClient={supabaseClient} /> : <Navigate to="/"/>}/>  
+          <Route path="/user" element={isLoggedIn ? <UserPage user={user} supabaseClient={supabaseClient} logout={logout}/> : <Navigate to="/"/>}/>  
         </Routes>
       </div>
   )
