@@ -1,6 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    kompose.cmd: C:\Kompose\kompose.exe --file docker-compose.yml convert
+    kompose.version: 1.35.0 (9532ceef3)
   labels:
     io.kompose.service: movie-service
   name: movie-service
@@ -16,17 +19,21 @@ spec:
     spec:
       containers:
         - env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: docker
             - name: EUREKA_URL
               value: http://eureka:8761/eureka/
+            - name: RABBITMQ_URL
+              value: rabbitmq
             - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
               value: "true"
             - name: EUREKA_INSTANCE_HOSTNAME
               value: movie-service
+            - name: SECRET_KEY_ATLAS
+              valueFrom:
+                secretKeyRef:
+                  name: watchflix-secrets
+                  key: SECRET_KEY_ATLAS
           securityContext:
             allowPrivilegeEscalation: false
-            runAsNonRoot: true
             capabilities:
               drop:
                 - ALL

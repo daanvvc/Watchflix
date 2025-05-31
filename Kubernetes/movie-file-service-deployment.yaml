@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: movie-file-service
+  name: movie-file-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: movie-file-service
+  template:
+    metadata:
+      labels:
+        io.kompose.service: movie-file-service
+    spec:
+      containers:
+        - env:
+            - name: EUREKA_URL
+              value: http://eureka:8761/eureka/
+            - name: RABBITMQ_URL
+              value: rabbitmq
+            - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+              value: "true"
+            - name: EUREKA_INSTANCE_HOSTNAME
+              value: movie-file-service
+            - name: VIRUSTOTAL_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: watchflix-secrets
+                  key: VIRUSTOTAL_API_KEY
+            - name: AZUREBLOB_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: watchflix-secrets
+                  key: AZUREBLOB_API_KEY
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          image: daanvervaecke/watchflix-moviefileservice:latest
+          name: moviefileservice
+          ports:
+            - containerPort: 9091
+              protocol: TCP
+      restartPolicy: Always

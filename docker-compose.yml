@@ -127,6 +127,8 @@ services:
       - GATEWAY
     environment:
       - VITE_HOST=http://gateway:8085
+      - VITE_SUPABASE_URL=SUPABASE_URL
+      - VITE_SUPABASE_ANON_KEY=SECRET_KEY_SUPABASE
 
 networks:
   watchflix-network:

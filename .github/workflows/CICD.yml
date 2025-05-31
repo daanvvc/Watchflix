@@ -100,7 +100,8 @@ jobs:
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u daanvervaecke --password-stdin
       - name: Build Docker image ${{ matrix.service }}
-        run: docker build -t daanvervaecke/watchflix-webapp:latest .
+        run: docker build --build-arg VITE_SUPABASE_URL=${{ secrets.SUPABASE_URL }} 
+          --build-arg VITE_SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} -t daanvervaecke/watchflix-webapp:latest .
       - name: Push Docker image of ${{ matrix.service }} to Docker Hub
         run: docker push daanvervaecke/watchflix-webapp:latest
       - name: Sonar scan ${{ matrix.service }}

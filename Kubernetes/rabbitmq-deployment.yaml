@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: rabbitmq
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: rabbitmq
+  template:
+    metadata:
+      labels:
+        io.kompose.service: rabbitmq
+    spec:
+      containers:
+        - args:
+            - bash
+            - -c
+            - rabbitmq-plugins enable --offline rabbitmq_mqtt && rabbitmq-server
+          env:
+            - name: RABBITMQ_DEFAULT_PASS
+              value: password
+            - name: RABBITMQ_DEFAULT_USER
+              value: user
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          image: rabbitmq:management
+          livenessProbe:
+            exec:
+              command:
+                - rabbitmq-diagnostics
+                - check_running
+            failureThreshold: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+          name: rabbitmq
+          ports:
+            - containerPort: 15672
+              protocol: TCP
+            - containerPort: 5672
+              protocol: TCP
+      restartPolicy: Always

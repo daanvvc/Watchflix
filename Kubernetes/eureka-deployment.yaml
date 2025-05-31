@@ -17,7 +17,6 @@ spec:
       containers:
         - securityContext:
             allowPrivilegeEscalation: false
-            runAsNonRoot: true
             capabilities:
               drop:
                 - ALL

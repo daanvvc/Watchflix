@@ -5,6 +5,7 @@ HELP.md
 !**/src/test/**/build/
 .env
 application-test.properties
+secrets.yaml
 
 # To add jacoco test reports for sonarcloud
 **/build/*

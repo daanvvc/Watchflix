@@ -14,30 +14,21 @@ spec:
       labels:
         io.kompose.service: gateway
     spec:
-#      containers:
-#        - env:
-#            - name: SPRING_PROFILES_ACTIVE
-#              value: docker
-#          image: gateway
-#          name: gateway
-#          imagePullPolicy: IfNotPresent
-#          ports:
-#            - containerPort: 8085
-#              protocol: TCP
-#      restartPolicy: Always
       containers:
         - env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: docker
             - name: EUREKA_URL
               value: http://eureka:8761/eureka/
             - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
               value: "true"
             - name: EUREKA_INSTANCE_HOSTNAME
               value: gateway
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: watchflix-secrets
+                  key: JWT_SECRET
           securityContext:
             allowPrivilegeEscalation: false
-            runAsNonRoot: true
             capabilities:
               drop:
                 - ALL
@@ -47,4 +38,3 @@ spec:
             - containerPort: 8085
               protocol: TCP
       restartPolicy: Always
-
