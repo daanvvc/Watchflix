@@ -1,7 +1,5 @@
 services:
   EUREKA:
-    build:
-      context: Eureka
     image: daanvervaecke/watchflix-eureka:latest
     container_name: Eureka
     networks:
@@ -29,8 +27,6 @@ services:
       retries: 10
 
   EVENT-BUS:
-    build:
-      context: EventBus
     image: daanvervaecke/watchflix-eventbus:latest
     container_name: EventBus
     networks:
@@ -45,8 +41,6 @@ services:
       - EUREKA_URL=http://eureka:8761/eureka/
 
   MOVIE-SERVICE:
-    build:
-      context: MovieService
     image: daanvervaecke/watchflix-movieservice:latest
     container_name: MovieService
     networks:
@@ -62,8 +56,6 @@ services:
       - SECRET_KEY_ATLAS
 
   MOVIE-FILE-SERVICE:
-    build:
-      context: MovieFileService
     image: daanvervaecke/watchflix-moviefileservice:latest
     container_name: MovieFileService
     networks:
@@ -80,8 +72,6 @@ services:
       - AZUREBLOB_API_KEY
         
   USER-SERVICE:
-    build:
-      context: UserService
     image: daanvervaecke/watchflix-userservice:latest
     container_name: UserService
     networks:
@@ -99,8 +89,6 @@ services:
       - SECRET_KEY_SUPABASE
 
   GATEWAY:
-    build:
-      context: Gateway
     image: daanvervaecke/watchflix-gateway:latest
     container_name: Gateway
     networks:
@@ -115,8 +103,6 @@ services:
       - JWT_SECRET
 
   WEBAPP:
-    build:
-      context: ./Watchflix
     image: daanvervaecke/watchflix-webapp:latest
     container_name: Webapp
     ports:
