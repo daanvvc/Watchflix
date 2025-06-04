@@ -20,6 +20,7 @@ spec:
               value: http://gateway:8085
           image: daanvervaecke/watchflix-webapp:latest
           name: webapp
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
               protocol: TCP

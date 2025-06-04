@@ -1,6 +1,4 @@
-# minikube start --driver=docker --cpus=4 --disk-size=20g  --memory=3000
-
-# Apply Secrets
+# Apply Secrets (TODO???)
 kubectl apply -f secrets.yaml
 
 # Apply backend services
@@ -28,3 +26,13 @@ kubectl apply -f gateway-deployment.yaml
 # Apply frontend services
 kubectl apply -f webapp-service.yaml
 kubectl apply -f webapp-deployment.yaml
+
+# Refresh the pods
+kubectl rollout restart deployment/eureka
+kubectl rollout restart deployment/rabbitmq
+kubectl rollout restart deployment/event-bus
+kubectl rollout restart deployment/movie-service
+kubectl rollout restart deployment/movie-file-service
+kubectl rollout restart deployment/user-service
+kubectl rollout restart deployment/gateway
+kubectl rollout restart deployment/webapp

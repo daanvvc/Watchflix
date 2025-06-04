@@ -62,6 +62,7 @@ function LoginPage(props) {
 
   return (
     <>
+      <p>Successfully deployed on Kubernetes!</p>
       {!mfaChallenge ? (
         <Auth
           supabaseClient={props.supabaseClient}
