@@ -191,7 +191,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Setup kubeconfig from secret
         shell: pwsh
         run: |
@@ -200,13 +199,11 @@ jobs:
             New-Item -ItemType Directory -Path (Split-Path $kubeconfigPath) -Force
           }
           '${{ secrets.KUBE_CONFIG }}' | Out-File -FilePath $kubeconfigPath -Encoding ascii
-
       - name: Verify cluster access
         shell: pwsh
         run: |
           kubectl config get-contexts
           kubectl get nodes
-
       - name: Run deployment script
         working-directory: ./Kubernetes
         shell: pwsh
