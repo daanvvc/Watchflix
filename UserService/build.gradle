@@ -45,6 +45,7 @@ dependencies {
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:4.0.4'
+    runtimeOnly 'com.h2database:h2'
 
     // Eureka
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.2.1'
