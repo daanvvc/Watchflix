@@ -1,10 +1,6 @@
 package fontys.IA.services;
 
 import fontys.IA.domain.MovieFile;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = SafeUploadService.class)
 @ActiveProfiles("test")
-class SafeUploadServiceSecurityTest {
+class SafeUploadServiceSecurityUnitTest {
     @Autowired
     private SafeUploadService safeUploadService;
 

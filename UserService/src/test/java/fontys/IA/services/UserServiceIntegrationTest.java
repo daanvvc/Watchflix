@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
@@ -33,7 +34,7 @@ public class UserServiceIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        // Create a test user with a random UUID
+        // Create a test user
         UUID userId = UUID.randomUUID();
         testUser = new User(userId, TEST_EMAIL, TEST_USERNAME, TEST_ROLE);
     }
@@ -45,28 +46,21 @@ public class UserServiceIntegrationTest {
     }
 
     @Test
-    public void testAddUser() {
+    public void addUser_SuccessTest() {
         // Act
         userService.addUser(testUser);
+        Optional<User> savedUser = userRepository.findById(testUser.getId());
 
         // Assert
-        Optional<User> savedUser = userRepository.findById(testUser.getId());
-        assertTrue(savedUser.isPresent(), "User should be saved in the database");
-
-        // Verify the email is encrypted
-        assertNotEquals(TEST_EMAIL, savedUser.get().getEmail(), "Email should be encrypted");
-
-        // Verify the email can be decrypted correctly
-        assertEquals(TEST_EMAIL, AESEncrypter.decrypt(savedUser.get().getEmail()),
-                "Decrypted email should match original");
-
-        // Verify other fields
-        assertEquals(TEST_USERNAME, savedUser.get().getUsername(), "Username should match");
-        assertEquals(TEST_ROLE, savedUser.get().getRole(), "Role should match");
+        assertTrue(savedUser.isPresent());
+        assertNotEquals(TEST_EMAIL, savedUser.get().getEmail()); // is email encrypted
+        assertEquals(TEST_EMAIL, AESEncrypter.decrypt(savedUser.get().getEmail())); // can email be decrypted correctly
+        assertEquals(TEST_USERNAME, savedUser.get().getUsername());
+        assertEquals(TEST_ROLE, savedUser.get().getRole());
     }
 
     @Test
-    public void testGetUser() {
+    public void getUser_SuccessTest() {
         // Arrange
         String encryptedEmail = AESEncrypter.encrypt(TEST_EMAIL);
         User encryptedUser = new User(testUser.getId(), encryptedEmail, TEST_USERNAME, TEST_ROLE);
@@ -76,45 +70,37 @@ public class UserServiceIntegrationTest {
         User retrievedUser = userService.getUser(testUser.getId().toString());
 
         // Assert
-        assertNotNull(retrievedUser, "Retrieved user should not be null");
-        assertEquals(testUser.getId(), retrievedUser.getId(), "User ID should match");
-        assertEquals(TEST_EMAIL, retrievedUser.getEmail(), "Email should be decrypted correctly");
-        assertEquals(TEST_USERNAME, retrievedUser.getUsername(), "Username should match");
-        assertEquals(TEST_ROLE, retrievedUser.getRole(), "Role should match");
+        assertNotNull(retrievedUser);
+        assertEquals(testUser.getId(), retrievedUser.getId());
+        assertEquals(TEST_EMAIL, retrievedUser.getEmail());
+        assertEquals(TEST_USERNAME, retrievedUser.getUsername());
+        assertEquals(TEST_ROLE, retrievedUser.getRole());
     }
 
     @Test
-    public void testGetNonExistentUser() {
+    public void getNonExistentUser_SuccessTest() {
         // Act
         User retrievedUser = userService.getUser(UUID.randomUUID().toString());
 
         // Assert
-        assertNull(retrievedUser, "Non-existent user should return null");
+        assertNull(retrievedUser);
     }
 
     @Test
-    public void testAddDuplicateUser() {
+    public void addDuplicateEmail_FailureTest() {
         // Arrange
         userService.addUser(testUser);
 
-        // Create another user with the same ID but different details
-        User duplicateUser = new User(
-                testUser.getId(),
-                "another@example.com",
-                "anotheruser",
-                UserRole.ADMIN
-        );
+        // Create another user with the same email
+        User duplicateUser = new User(UUID.randomUUID(), TEST_EMAIL, "anotheruser", UserRole.ADMIN);
 
-        // Act & Assert
-        // Currently, the service doesn't throw an exception for duplicate users
-        // It just logs a TODO comment. We can test the current behavior:
-        userService.addUser(duplicateUser);
+        // Assert
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            userService.addUser(duplicateUser);
+        });
 
         // Verify that the original user data is still in the database
         Optional<User> savedUser = userRepository.findById(testUser.getId());
-        assertTrue(savedUser.isPresent(), "User should still exist in the database");
-
-        // The current implementation would overwrite the existing user
-        // If you implement the exception later, this test would need to be updated
+        assertTrue(savedUser.isPresent());
     }
 }
