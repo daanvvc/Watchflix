@@ -25,11 +25,12 @@ public class MovieUploadListener {
     public void addMovie(Message message) {
         System.out.println("Working...");
         UUID movieId = UUID.fromString((String) message.getMessageProperties().getHeaders().get("movieId"));
+        UUID uploaderId = UUID.fromString((String) message.getMessageProperties().getHeaders().get("userId"));
 
         String filename = movieId.toString() + ".mp4";
 
         Resource movieResource = new ByteArrayResource(message.getBody());
-        MovieFile movieFile = new MovieFile(movieId, movieResource, filename);
+        MovieFile movieFile = new MovieFile(movieId, movieResource, filename, uploaderId);
 
         String upload_status = "SUCCEEDED";
         // Get the movie

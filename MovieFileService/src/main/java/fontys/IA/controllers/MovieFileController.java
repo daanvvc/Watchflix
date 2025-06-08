@@ -55,7 +55,7 @@ public class MovieFileController {
     @PostMapping(value = "/upload")
     public void uploadFile(@RequestParam("video") MultipartFile file) throws IOException {
         try {
-            MovieFile movieFile = new MovieFile(UUID.randomUUID(), file.getResource(), "Blob_Test");
+            MovieFile movieFile = new MovieFile(UUID.randomUUID(), file.getResource(), "Blob_Test", UUID.randomUUID());
 
             movieFileService.uploadMovieFile(movieFile);
 
