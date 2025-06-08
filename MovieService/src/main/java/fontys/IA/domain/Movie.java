@@ -5,7 +5,6 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.UUID;
 
@@ -20,13 +19,15 @@ public class Movie {
     private UUID id;
     private String name;
     private Status uploadStatus;
+    private UUID uploaderId;
     @Version
     private Long version;
 
-    public Movie(UUID id, String name, Status uploadStatus) {
+    public Movie(UUID id, String name, Status uploadStatus, UUID uploaderId) {
         this.id = id;
         this.name = name;
         this.uploadStatus = uploadStatus;
+        this.uploaderId = uploaderId;
     }
 
     public void updateUploadStatus(Status updatedUploadStatus) {

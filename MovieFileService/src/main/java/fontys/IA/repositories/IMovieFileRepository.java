@@ -10,4 +10,5 @@ import java.util.UUID;
 public interface IMovieFileRepository {
     Optional<MovieFile> findById(String MovieId);
     void save(MovieFile movieFile);
+    void updateUploaderId(String oldUploaderId, String newUploaderId);
     }

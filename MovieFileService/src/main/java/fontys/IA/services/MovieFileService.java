@@ -46,4 +46,8 @@ public class MovieFileService {
 
         movieFileRepository.save(movieFile);
     }
+
+    public void updateUploaderId(String oldUploaderId, String newUploaderId) {
+        movieFileRepository.updateUploaderId(oldUploaderId, newUploaderId);
+    }
 }

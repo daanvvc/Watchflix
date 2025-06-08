@@ -21,6 +21,7 @@ public class MovieUploadListener {
     public void addMovie(Message message) {
         // Get the movieId
         UUID movieId = UUID.fromString((String) message.getMessageProperties().getHeaders().get("movieId"));
+        UUID userId = UUID.fromString((String) message.getMessageProperties().getHeaders().get("userId"));
 
         try {
             // Get the movie information
@@ -31,7 +32,7 @@ public class MovieUploadListener {
 
             System.out.println(title + "is being uploaded with movieId:" + movieId);
 
-            movieService.addMovie(new Movie(movieId, title, Status.PENDING));
+            movieService.addMovie(new Movie(movieId, title, Status.PENDING, userId));
         } catch (Exception ex) {
             // TODO Improve
             return;

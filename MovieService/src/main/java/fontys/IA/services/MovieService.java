@@ -61,4 +61,8 @@ public class MovieService {
             throw new OptimisticLockingFailureException("Update failed due to version conflict");
         }
     }
+
+    public void updateUploaderId(String oldUploaderId, String newUploaderId) {
+        long updated = movieRepository.updateUploaderId(oldUploaderId, newUploaderId);
+    }
 }

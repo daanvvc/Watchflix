@@ -33,7 +33,7 @@ class MovieServiceUnitTest {
     String name = "The Brutalist";
     @BeforeEach
     public void BeforeEach() {
-        movie = new Movie(id, name, Status.PENDING);
+        movie = new Movie(id, name, Status.PENDING, UUID.randomUUID());
     }
 
     @Test

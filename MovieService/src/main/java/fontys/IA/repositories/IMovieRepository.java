@@ -16,6 +16,9 @@ public interface IMovieRepository extends MongoRepository<Movie, UUID> {
     @Update("{ '$set': { 'uploadStatus': ?1 }, '$inc': { 'version': 1 } }")
     long updateStatus(UUID movieId, Status uploadStatus, long currentVersion);
 
+    @Query("{ 'uploaderId': ?0 }")
+    @Update("{ '$set': { 'uploader': ?1 } }")
+    long updateUploaderId(String oldUploaderId, String newUploaderId);
 
     List<Movie> findByUploadStatus(Status status, Pageable pageable);
 }

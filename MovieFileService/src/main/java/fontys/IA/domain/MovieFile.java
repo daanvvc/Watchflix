@@ -14,4 +14,5 @@ public class MovieFile {
     private UUID id;
     private Resource file;
     private String fileName;
+    private UUID uploaderId;
 }

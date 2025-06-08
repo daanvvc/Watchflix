@@ -58,12 +58,14 @@ public class MovieUploadRunner {
                     .withBody(movieFile.getBytes())
                     .setContentType(MessageProperties.CONTENT_TYPE_BYTES)
                     .setHeader("movieId", sanitizedMovieId )
+                    .setHeader("userId", userId)
                     .build();
 
             Message messageWithInformation = MessageBuilder
                     .withBody(movieInformationJson.getBytes())
                     .setContentType(MessageProperties.CONTENT_TYPE_TEXT_PLAIN)
                     .setHeader("movieId", sanitizedMovieId )
+                    .setHeader("userId", userId)
                     .build();
 
             rabbitTemplate.convertAndSend("amq.topic",

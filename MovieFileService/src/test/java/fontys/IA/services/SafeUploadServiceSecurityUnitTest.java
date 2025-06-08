@@ -118,7 +118,7 @@ class SafeUploadServiceSecurityUnitTest {
     void ValidMp4VirusTotalScan_SuccessTest() throws IOException {
         // Arrange
         Resource videoFile = new ClassPathResource("valid-mp4-with-h264.mp4");
-        MovieFile movieFile = new MovieFile(UUID.randomUUID(), videoFile, "Success_Test_File");
+        MovieFile movieFile = new MovieFile(UUID.randomUUID(), videoFile, "Success_Test_File", UUID.randomUUID());
 
         // Act
         boolean result = safeUploadService.isMaliciousVirusTotalScan(movieFile);
@@ -131,7 +131,7 @@ class SafeUploadServiceSecurityUnitTest {
     void EICARTestFileVirusTotalScan_FailureTest() throws IOException {
         // Arrange
         Resource videoFile = new ClassPathResource("eicar-test-file.mp4");
-        MovieFile movieFile = new MovieFile(UUID.randomUUID(), videoFile, "Failure_Test_File");
+        MovieFile movieFile = new MovieFile(UUID.randomUUID(), videoFile, "Failure_Test_File", UUID.randomUUID());
 
         // Act
         boolean validMp4Result = safeUploadService.isValidMp4WithH264(videoFile);

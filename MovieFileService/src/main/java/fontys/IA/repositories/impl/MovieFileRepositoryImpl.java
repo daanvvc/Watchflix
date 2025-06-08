@@ -2,9 +2,10 @@ package fontys.IA.repositories.impl;
 
 import com.azure.storage.blob.*;
 import com.azure.storage.blob.models.BlobHttpHeaders;
+import com.azure.storage.blob.models.BlobItem;
+import com.azure.storage.blob.models.BlobProperties;
 import fontys.IA.domain.MovieFile;
 import fontys.IA.repositories.IMovieFileRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 @Repository
 public class MovieFileRepositoryImpl implements IMovieFileRepository {
@@ -45,8 +48,11 @@ public class MovieFileRepositoryImpl implements IMovieFileRepository {
             blobClient.upload(inputStream, size, true);
 
             BlobHttpHeaders headers = new BlobHttpHeaders().setContentType("video/mp4");
-
             blobClient.setHttpHeaders(headers);
+
+            Map<String, String> metadata = new HashMap<>();
+            metadata.put("UploaderId", movieFile.getUploaderId().toString());
+            blobClient.setMetadata(metadata);
 
             System.out.println("Uploaded movie file: " + movieFile.getFileName());
         } catch (Exception ex) {
@@ -79,6 +85,28 @@ public class MovieFileRepositoryImpl implements IMovieFileRepository {
         } catch (Exception ex) {
             System.out.println("Error downloading movie file " + ex);
             return Optional.empty();
+        }
+    }
+
+    @Override
+    public void updateUploaderId(String oldUploaderId, String newUploaderId) {
+        for (BlobItem blobItem : containerClient.listBlobs()) {
+            BlobClient blobClient = containerClient.getBlobClient(blobItem.getName());
+
+            try {
+                BlobProperties properties = blobClient.getProperties();
+                Map<String, String> metadata = new HashMap<>(properties.getMetadata());
+
+                // Only update if current uploaderId matches
+                if (oldUploaderId.equals(metadata.get("UploaderId"))) {
+                    metadata.put("uploaderId", newUploaderId);
+                    blobClient.setMetadata(metadata);
+                    System.out.println("Updated uploaderId for blob: " + blobItem.getName());
+                }
+
+            } catch (Exception ex) {
+                System.err.println("Failed to update metadata for blob " + blobItem.getName() + ": " + ex.getMessage());
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package fontys.IA.repositories.fakeimpl;
 
 import fontys.IA.domain.MovieFile;
 import fontys.IA.repositories.IMovieFileRepository;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -22,7 +23,7 @@ public class MovieFileRepositoryFakeImpl implements IMovieFileRepository {
 
         Resource file = new ClassPathResource("mockMovie.mp4");
 
-        movieFiles.add(new MovieFile(UUID.randomUUID(), file, "The_Brutalist.mp4"));
+        movieFiles.add(new MovieFile(UUID.randomUUID(), file, "The_Brutalist.mp4", UUID.randomUUID()));
     }
 
     public Optional<MovieFile> findById(String movieId) {
@@ -37,5 +38,10 @@ public class MovieFileRepositoryFakeImpl implements IMovieFileRepository {
 
     public void save(MovieFile movieFile) {
         movieFiles.add(movieFile);
+    }
+
+
+    public void updateUploaderId(String oldUploaderId, String newUploaderId) {
+        throw new NotImplementedException();
     }
 }
