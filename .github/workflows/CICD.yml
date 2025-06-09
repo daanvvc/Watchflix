@@ -196,28 +196,28 @@ jobs:
         if: always()
         run: docker compose down
 
-#  deploy_AKS:
-#    name: Deploy to AKS
-#    runs-on: windows-latest
-#    needs: [ tests ]
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v3
-#      - name: Setup kubeconfig from secret
-#        shell: pwsh
-#        run: |
-#          $kubeconfigPath = "$env:USERPROFILE\.kube\config"
-#          if (!(Test-Path -Path (Split-Path $kubeconfigPath))) {
-#            New-Item -ItemType Directory -Path (Split-Path $kubeconfigPath) -Force
-#          }
-#          '${{ secrets.KUBE_CONFIG }}' | Out-File -FilePath $kubeconfigPath -Encoding ascii
-#      - name: Verify cluster access
-#        shell: pwsh
-#        run: |
-#          kubectl config get-contexts
-#          kubectl get nodes
-#      - name: Run deployment script
-#        working-directory: ./Kubernetes
-#        shell: pwsh
-#        run: |
-#          ./deploy-watchflix-pipeline.ps1
+  deploy_AKS:
+    name: Deploy to AKS
+    runs-on: windows-latest
+    needs: [ tests ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup kubeconfig from secret
+        shell: pwsh
+        run: |
+          $kubeconfigPath = "$env:USERPROFILE\.kube\config"
+          if (!(Test-Path -Path (Split-Path $kubeconfigPath))) {
+            New-Item -ItemType Directory -Path (Split-Path $kubeconfigPath) -Force
+          }
+          '${{ secrets.KUBE_CONFIG }}' | Out-File -FilePath $kubeconfigPath -Encoding ascii
+      - name: Verify cluster access
+        shell: pwsh
+        run: |
+          kubectl config get-contexts
+          kubectl get nodes
+      - name: Run deployment script
+        working-directory: ./Kubernetes
+        shell: pwsh
+        run: |
+          ./deploy-watchflix-pipeline.ps1
