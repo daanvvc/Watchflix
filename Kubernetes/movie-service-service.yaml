@@ -5,6 +5,7 @@ metadata:
     io.kompose.service: movie-service
   name: movie-service
 spec:
+  type: LoadBalancer
   ports:
     - name: "9090"
       port: 9090

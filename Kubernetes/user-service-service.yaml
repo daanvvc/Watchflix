@@ -5,6 +5,7 @@ metadata:
     io.kompose.service: user-service
   name: user-service
 spec:
+  type: LoadBalancer
   ports:
     - name: "9093"
       port: 9093
