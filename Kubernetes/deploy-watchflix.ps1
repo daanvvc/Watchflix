@@ -28,3 +28,10 @@ kubectl apply -f gateway-deployment.yaml
 # Apply frontend services
 kubectl apply -f webapp-service.yaml
 kubectl apply -f webapp-deployment.yaml
+
+# Apply autoscalers (HPA)
+kubectl apply -f user-service-hpa.yaml
+kubectl apply -f gateway-hpa.yaml
+kubectl apply -f movie-service-hpa.yaml
+kubectl apply -f movie-file-service-hpa.yaml
+kubectl apply -f event-bus-hpa.yaml

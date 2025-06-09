@@ -8,7 +8,6 @@ metadata:
     io.kompose.service: movie-file-service
   name: movie-file-service
 spec:
-  type: LoadBalancer
   ports:
     - name: "9091"
       port: 9091
