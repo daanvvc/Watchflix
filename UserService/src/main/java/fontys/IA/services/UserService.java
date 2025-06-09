@@ -5,18 +5,24 @@ import com.fasterxml.jackson.databind.JsonNode;
 import fontys.IA.domain.AESEncrypter;
 import fontys.IA.domain.User;
 import fontys.IA.domain.enums.UserRole;
+import fontys.IA.eventbus.MessageSender;
 import fontys.IA.repositories.IUserRepository;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang.NullArgumentException;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.io.*;
 import java.nio.file.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -26,6 +32,7 @@ public class UserService {
     private IUserRepository userRepository;
     private SupabaseService supabaseService;
     private final ObjectMapper objectMapper;
+    private MessageSender messageSender;
 
     public void addUser(User user) {
         if(userRepository.findById(user.getId()).isPresent()){
@@ -57,7 +64,9 @@ public class UserService {
         return userRole.orElse(null);
     }
 
-    public void deleteUser(String userId) {
+    public void sendDeletionUserMessage(String userId) throws JsonProcessingException {
+        System.out.println("Starting to delete: " + userId);
+
         // Get the user
         User user = getUser(userId);
 
@@ -66,20 +75,52 @@ public class UserService {
             throw new NullArgumentException("User cannot be null");
         }
 
-        // Delete the user in the user repository
-        userRepository.delete(user);
+        String anonymousId = userRepository.findByUsername("anonymous").get().getId().toString();
 
-        // Check that the user was deleted
-        if(userRepository.existsById(user.getId())) {
-            System.out.println("Failed to delete user from Neon database with ID " + user.getId());
-            throw new IllegalStateException("Failed to delete user from Neon database with ID " + user.getId());
+        // Make the message with user id, the id to make it anonymous and a correlation id
+        Map<String, Object> payloadMap = new HashMap<>();
+        payloadMap.put("userId", userId);
+        payloadMap.put("anonymousUserId", anonymousId);
+
+        MessageProperties props = new MessageProperties();
+        props.setCorrelationId(UUID.randomUUID().toString());
+        Message message = new Message(new ObjectMapper().writeValueAsBytes(payloadMap), props);
+
+        System.out.println("Sending message...");
+
+        // Send the message
+        messageSender.sendMessage("user-forget-fanout", "", message);
+    }
+
+    public void tryToDelete(String userId, boolean deletedInMicroServices) {
+        // Check that the user was deleted or anonymized in the microservices
+        if (!deletedInMicroServices) {
+            System.out.println("Failed to delete user from micro serviceswith ID " + userId);
+            throw new IllegalStateException("Failed to delete user from microservices with ID " + userId);
         }
 
-        // Delete the user from Supabase
-        if (!supabaseService.deleteUser(userId)) {
-            System.out.println("Failed to delete user from Supabase database with ID " + user.getId());
-            throw new IllegalStateException("Failed to delete user from Supabase database with ID " + user.getId());
-        }
+        // Get the user
+//        User user = getUser(userId);
+//
+//        // Check the user is not null
+//        if (user == null) {
+//            throw new NullArgumentException("User cannot be null");
+//        }
+//
+//        // Delete the user in the user repository
+//        userRepository.delete(user);
+//
+//        // Check that the user was deleted
+//        if(userRepository.existsById(user.getId())) {
+//            System.out.println("Failed to delete user from Neon database with ID " + userId);
+//            throw new IllegalStateException("Failed to delete user from Neon database with ID " + userId);
+//        }
+//
+//        // Delete the user from Supabase
+//        if (!supabaseService.deleteUser(userId)) {
+//            System.out.println("Failed to delete user from Supabase database with ID " + userId);
+//            throw new IllegalStateException("Failed to delete user from Supabase database with ID " + userId);
+//        }
     }
 
     // Should return a zip file

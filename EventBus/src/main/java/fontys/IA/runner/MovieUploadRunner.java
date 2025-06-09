@@ -1,4 +1,4 @@
-package fontys.IA;
+package fontys.IA.runner;
 
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;

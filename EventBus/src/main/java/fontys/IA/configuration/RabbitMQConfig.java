@@ -1,9 +1,6 @@
 package fontys.IA.configuration;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -59,7 +56,32 @@ public class RabbitMQConfig {
                 .with(routingKeyName);
     }
 
-    // Forces the queue to be binded
+    // For scatter-gather (right to be forgotten)
+    @Bean
+    public FanoutExchange forgetUserFanoutExchange() {
+        return new FanoutExchange("user-forget-fanout");
+    }
+
+    @Bean
+    public Queue forgetUserResponseQueue() {
+        return QueueBuilder.durable("user-forget-response-queue").build();
+    }
+
+    @Bean
+    public Queue forgetUserFinalizedQueue() {
+        return QueueBuilder.durable("user-forget-finalized-queue").build();
+    }
+
+    @Bean
+    public Binding bindingD(TopicExchange topicExchange, Queue forgetUserFinalizedQueue) {
+        String routingKeyName = "user-forget-finalized-routing-key";
+
+        return BindingBuilder.bind(forgetUserFinalizedQueue)
+                .to(topicExchange)
+                .with(routingKeyName);
+    }
+
+    // Forces the queues to be binded
     @Bean
     public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
         return new RabbitAdmin(connectionFactory);

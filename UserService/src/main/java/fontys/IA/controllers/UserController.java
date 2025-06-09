@@ -7,16 +7,13 @@ import fontys.IA.domain.enums.UserRole;
 import fontys.IA.services.UserService;
 import lombok.AllArgsConstructor;
 import org.apache.hc.core5.http.HttpHeaders;
-import org.bouncycastle.crypto.OutputLengthException;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Value;
 
-import javax.crypto.SecretKey;
 import java.io.File;
 import java.util.Map;
 import java.util.UUID;
@@ -133,12 +130,15 @@ public class UserController {
                                         @PathVariable("id") String requestedUserId) {
         // Check that the user who is requesting user data is authorized to do so
         // (User can only delete their own data)
+
+        System.out.println("Delete user request gotten");
+
         if (!userIdRequester.equals(requestedUserId)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         try {
-            userService.deleteUser(requestedUserId);
+            userService.sendDeletionUserMessage(requestedUserId);
 
             return ResponseEntity.ok().build();
         } catch (Exception ex) {
