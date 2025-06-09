@@ -5,7 +5,7 @@ metadata:
     io.kompose.service: gateway
   name: gateway
 spec:
-  type: LoadBalancer
+#  type: LoadBalancer
   ports:
     - name: "8085"
       port: 8085

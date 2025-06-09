@@ -5,7 +5,7 @@ metadata:
     io.kompose.service: webapp
   name: webapp
 spec:
-  type: LoadBalancer
+#  type: LoadBalancer
   ports:
     - name: "3000"
       port: 3000
