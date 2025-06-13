@@ -64,7 +64,7 @@ public class MovieService {
 
     public boolean updateUploaderId(String oldUploaderId, String newUploaderId) {
         movieRepository.updateUploaderId(oldUploaderId, newUploaderId);
-        int numberOfMoviesFromUser = movieRepositoryx.getAllByUploaderId(oldUploaderId).size();
+        int numberOfMoviesFromUser = movieRepository.getAllByUploaderId(oldUploaderId).size();
         return numberOfMoviesFromUser == 0;
     }
 }
