@@ -44,4 +44,6 @@ public class MovieFileRepositoryFakeImpl implements IMovieFileRepository {
     public void updateUploaderId(String oldUploaderId, String newUploaderId) {
         throw new NotImplementedException();
     }
-}
+
+    public int countByUploaderId(String uploaderId) {throw new NotImplementedException(); }
+    }

@@ -47,7 +47,9 @@ public class MovieFileService {
         movieFileRepository.save(movieFile);
     }
 
-    public void updateUploaderId(String oldUploaderId, String newUploaderId) {
+    public boolean updateUploaderId(String oldUploaderId, String newUploaderId) {
         movieFileRepository.updateUploaderId(oldUploaderId, newUploaderId);
+        long movieFilesByOldUser = movieFileRepository.countByUploaderId(oldUploaderId);
+        return movieFilesByOldUser == 0;
     }
 }

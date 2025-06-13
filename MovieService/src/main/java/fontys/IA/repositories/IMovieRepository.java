@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.Update;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface IMovieRepository extends MongoRepository<Movie, UUID> {
@@ -21,4 +20,5 @@ public interface IMovieRepository extends MongoRepository<Movie, UUID> {
     long updateUploaderId(String oldUploaderId, String newUploaderId);
 
     List<Movie> findByUploadStatus(Status status, Pageable pageable);
+    List<Movie> getAllByUploaderId(String uploaderId);
 }

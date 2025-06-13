@@ -38,9 +38,7 @@ public class UserForgetListener {
         // Anonymize the user
         boolean isSuccessful;
         try {
-//             movieService.updateUploaderId(userId, anonymousUserId);
-
-            isSuccessful = true;
+            isSuccessful = movieService.updateUploaderId(userId, anonymousUserId);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             isSuccessful = false;

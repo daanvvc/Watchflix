@@ -12,10 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class MovieFileRepositoryImpl implements IMovieFileRepository {
@@ -108,5 +105,28 @@ public class MovieFileRepositoryImpl implements IMovieFileRepository {
                 System.err.println("Failed to update metadata for blob " + blobItem.getName() + ": " + ex.getMessage());
             }
         }
+    }
+
+    @Override
+    public int countByUploaderId(String uploaderId) {
+        int count = 0;
+
+        for (BlobItem blobItem : containerClient.listBlobs()) {
+            BlobClient blobClient = containerClient.getBlobClient(blobItem.getName());
+
+            try {
+                BlobProperties properties = blobClient.getProperties();
+                Map<String, String> metadata = properties.getMetadata();
+
+                if (uploaderId.equals(metadata.get("UploaderId"))) {
+                    count++;
+                }
+
+            } catch (Exception ex) {
+                System.err.println("Failed to read metadata for blob " + blobItem.getName() + ": " + ex.getMessage());
+            }
+        }
+
+        return count;
     }
 }

@@ -33,6 +33,10 @@ function UserPage(props) {
     UserApi.deleteUser(props.user?.id)
       .then((response) => {
         if (response.status === 204 || response.status === 200) {
+          
+          window.alert("Your deletion request is being handled. You will be logged out when clicking on the ok button." +
+             "Please try to login in 10 minutes to see if the deletion was successful");
+
           props.logout();
         } else {
           setOutputText("Failed to delete your account. Please try again.");

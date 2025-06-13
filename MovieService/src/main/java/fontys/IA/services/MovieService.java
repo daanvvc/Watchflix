@@ -62,7 +62,9 @@ public class MovieService {
         }
     }
 
-    public void updateUploaderId(String oldUploaderId, String newUploaderId) {
-        long updated = movieRepository.updateUploaderId(oldUploaderId, newUploaderId);
+    public boolean updateUploaderId(String oldUploaderId, String newUploaderId) {
+        movieRepository.updateUploaderId(oldUploaderId, newUploaderId);
+        int numberOfMoviesFromUser = movieRepositoryx.getAllByUploaderId(oldUploaderId).size();
+        return numberOfMoviesFromUser == 0;
     }
 }
