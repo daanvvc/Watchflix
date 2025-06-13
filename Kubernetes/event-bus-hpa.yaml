@@ -19,10 +19,10 @@ spec:
 #  For more stable scaling
   behavior:
     scaleUp:
-      stabilizationWindowSeconds: 30
+      stabilizationWindowSeconds: 300
       policies:
         - type: Pods
           value: 1
-          periodSeconds: 60
+          periodSeconds: 150
     scaleDown:
-      stabilizationWindowSeconds: 30
+      stabilizationWindowSeconds: 60
