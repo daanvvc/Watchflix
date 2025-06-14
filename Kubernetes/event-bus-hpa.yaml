@@ -17,12 +17,12 @@ spec:
           type: Utilization
           averageUtilization: 50
 #  For more stable scaling
-  behavior:
-    scaleUp:
-      stabilizationWindowSeconds: 120
-      policies:
-        - type: Pods
-          value: 1
-          periodSeconds: 120
-    scaleDown:
-      stabilizationWindowSeconds: 60
+#  behavior:
+#    scaleUp:
+#      stabilizationWindowSeconds: 60
+#      policies:
+#        - type: Pods
+#          value: 1
+#          periodSeconds: 120
+#    scaleDown:
+#      stabilizationWindowSeconds: 60

@@ -209,7 +209,7 @@ jobs:
         uses: azure/login@v2
         with:
           creds: ${{ secrets.SECRET_KEY_AZURE }}
-      - name: Set Kubernetes context
+      - name: Get Kubernetes credentials
         run: az aks get-credentials --resource-group Watchflix-Cloud --name Watchflix-Cloud
       - name: Run deployment script
         working-directory: ./Kubernetes
