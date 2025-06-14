@@ -198,7 +198,7 @@ jobs:
 
   deploy_AKS:
     name: Deploy to AKS
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 #    needs: [ tests ]
     steps:
       - name: Checkout code
@@ -209,26 +209,9 @@ jobs:
         uses: azure/login@v2
         with:
           creds: ${{ secrets.SECRET_KEY_AZURE }}
-      - name: Test
-        run: az account show
-
-
-
-#      - name: Setup kubeconfig from secret
-#        shell: pwsh
-#        run: |
-#          $kubeconfigPath = "$env:USERPROFILE\.kube\config"
-#          if (!(Test-Path -Path (Split-Path $kubeconfigPath))) {
-#            New-Item -ItemType Directory -Path (Split-Path $kubeconfigPath) -Force
-#          }
-#          '${{ secrets.KUBE_CONFIG }}' | Out-File -FilePath $kubeconfigPath -Encoding ascii
-#      - name: Verify cluster access
-#        shell: pwsh
-#        run: |
-#          kubectl config get-contexts
-#          kubectl get nodes
-#      - name: Run deployment script
-#        working-directory: ./Kubernetes
-#        shell: pwsh
-#        run: |
-#          ./deploy-watchflix-pipeline.ps1
+      - name: Set Kubernetes context
+        run: az aks get-credentials --resource-group Watchflix-Cloud --name Watchflix-Cloud
+      - name: Run deployment script
+        working-directory: ./Kubernetes
+        shell: pwsh
+        run: ./deploy-watchflix-pipeline.ps1
