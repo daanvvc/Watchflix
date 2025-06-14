@@ -100,27 +100,27 @@ public class UserService {
         }
 
         // Get the user
-//        User user = getUser(userId);
-//
-//        // Check the user is not null
-//        if (user == null) {
-//            throw new NullArgumentException("User cannot be null");
-//        }
-//
-//        // Delete the user in the user repository
-//        userRepository.delete(user);
-//
-//        // Check that the user was deleted
-//        if(userRepository.existsById(user.getId())) {
-//            System.out.println("Failed to delete user from Neon database with ID " + userId);
-//            throw new IllegalStateException("Failed to delete user from Neon database with ID " + userId);
-//        }
-//
-//        // Delete the user from Supabase
-//        if (!supabaseService.deleteUser(userId)) {
-//            System.out.println("Failed to delete user from Supabase database with ID " + userId);
-//            throw new IllegalStateException("Failed to delete user from Supabase database with ID " + userId);
-//        }
+        User user = getUser(userId);
+
+        // Check the user is not null
+        if (user == null) {
+            throw new NullArgumentException("User cannot be null");
+        }
+
+        // Delete the user in the user repository
+        userRepository.delete(user);
+
+        // Check that the user was deleted
+        if(userRepository.existsById(user.getId())) {
+            System.out.println("Failed to delete user from Neon database with ID " + userId);
+            throw new IllegalStateException("Failed to delete user from Neon database with ID " + userId);
+        }
+
+        // Delete the user from Supabase
+        if (!supabaseService.deleteUser(userId)) {
+            System.out.println("Failed to delete user from Supabase database with ID " + userId);
+            throw new IllegalStateException("Failed to delete user from Supabase database with ID " + userId);
+        }
     }
 
     // Should return a zip file

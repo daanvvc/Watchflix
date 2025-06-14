@@ -15,7 +15,7 @@ class WebsiteUser(HttpUser):
 
     def on_start(self):
         # Add a token to each request
-        self.token = "eyJhbGciOiJIUzI1NiIsImtpZCI6IkRKVkhuemZOZHdRL1BKQXAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2RuY29pbWppZGlmYnpyaWZjdnNrLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiI2ZGY1ODhmMS04NTRkLTQ5MzktYjgwMC1iYzZlYjVjYzQ1MGMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzQ5NDgwMjc1LCJpYXQiOjE3NDk0NzY2NzUsImVtYWlsIjoiam9obi5kb2VAZXhhbXBsZS5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImVtYWlsIiwicHJvdmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7ImVtYWlsX3ZlcmlmaWVkIjp0cnVlfSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTc0OTQ3NjY3NX1dLCJzZXNzaW9uX2lkIjoiODljNmNiYmItZTBiMC00YTRkLTllZTktZWQzMmFlYTAxZjUwIiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.cFwFQXV5xu8Q5O6K6miRbyeaqm6GpytkUqXmt-pKvCc"
+        self.token = "eyJhbGciOiJIUzI1NiIsImtpZCI6IkRKVkhuemZOZHdRL1BKQXAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2RuY29pbWppZGlmYnpyaWZjdnNrLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiI2ZGY1ODhmMS04NTRkLTQ5MzktYjgwMC1iYzZlYjVjYzQ1MGMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzQ5ODk5ODAxLCJpYXQiOjE3NDk4OTYyMDEsImVtYWlsIjoiam9obi5kb2VAZXhhbXBsZS5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImVtYWlsIiwicHJvdmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7ImVtYWlsX3ZlcmlmaWVkIjp0cnVlfSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTc0OTg5NjIwMX1dLCJzZXNzaW9uX2lkIjoiOThkM2RhMjMtZGI2NS00ZTk1LTk0OTMtYmM3ZTlhODBiYTliIiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.0-PV4XWy9T4Ajakzw16jkxJTTwlr8y8efRwxwmGq7Eo"
         self.headers = {
             "Authorization": f"Bearer {self.token}",
             "Content-Type": "application/json"
@@ -30,7 +30,7 @@ class WebsiteUser(HttpUser):
         with self.client.get(f"/movie/{self.movieId}", headers=self.headers, timeout=self.timeout, catch_response=True) as response:
             elapsed = response.elapsed.total_seconds()
             if elapsed > self.timeout:
-                response.failure(f"Request took too long: {elapsed:.2f}s")
+                response.failure(f"Request took too long")
             elif self.movieName not in response.text:
                 response.failure(f"This returned {response.text}, but {self.movieName} was expected")
             else:
