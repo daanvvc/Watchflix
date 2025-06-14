@@ -203,21 +203,32 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Setup kubeconfig from secret
-        shell: pwsh
-        run: |
-          $kubeconfigPath = "$env:USERPROFILE\.kube\config"
-          if (!(Test-Path -Path (Split-Path $kubeconfigPath))) {
-            New-Item -ItemType Directory -Path (Split-Path $kubeconfigPath) -Force
-          }
-          '${{ secrets.KUBE_CONFIG }}' | Out-File -FilePath $kubeconfigPath -Encoding ascii
-      - name: Verify cluster access
-        shell: pwsh
-        run: |
-          kubectl config get-contexts
-          kubectl get nodes
-      - name: Run deployment script
-        working-directory: ./Kubernetes
-        shell: pwsh
-        run: |
-          ./deploy-watchflix-pipeline.ps1
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Test
+        run: az account show
+
+
+
+#      - name: Setup kubeconfig from secret
+#        shell: pwsh
+#        run: |
+#          $kubeconfigPath = "$env:USERPROFILE\.kube\config"
+#          if (!(Test-Path -Path (Split-Path $kubeconfigPath))) {
+#            New-Item -ItemType Directory -Path (Split-Path $kubeconfigPath) -Force
+#          }
+#          '${{ secrets.KUBE_CONFIG }}' | Out-File -FilePath $kubeconfigPath -Encoding ascii
+#      - name: Verify cluster access
+#        shell: pwsh
+#        run: |
+#          kubectl config get-contexts
+#          kubectl get nodes
+#      - name: Run deployment script
+#        working-directory: ./Kubernetes
+#        shell: pwsh
+#        run: |
+#          ./deploy-watchflix-pipeline.ps1
