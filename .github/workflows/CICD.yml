@@ -208,7 +208,7 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.SECRET_KEY_AZURE }}
       - name: Test
         run: az account show
 
