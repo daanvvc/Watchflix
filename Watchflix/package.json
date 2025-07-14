@@ -16,7 +16,7 @@
   "dependencies": {
     "@stomp/stompjs": "^7.0.1",
     "@supabase/auth-ui-react": "^0.4.7",
-    "@supabase/supabase-js": "^2.49.3",
+    "@supabase/supabase-js": "^2.50.0",
     "amqplib": "^0.10.5",
     "assert": "^2.1.0",
     "axios": "^1.8.4",
